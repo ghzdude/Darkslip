@@ -3,7 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Destructible
+  - Interactable
+  - EndDemo
+  - Dialogue
+  - Wall
+  - Door
+  - SceneController
+  - Collectable
+  - InventoryManager
+  - ItemEntry
+  - DialogueManager
+  - Canvas
   layers:
   - Default
   - TransparentFX
@@ -38,6 +50,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: background
+    uniqueID: 3592961221
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: foreground
+    uniqueID: 2097576649
+    locked: 0
+  - name: player
+    uniqueID: 690662541
+    locked: 0
+  - name: UI
+    uniqueID: 2964616377
     locked: 0
