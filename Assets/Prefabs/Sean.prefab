@@ -102,7 +102,7 @@ SpriteRenderer:
   m_SortingLayerID: -1330350919
   m_SortingLayer: 3
   m_SortingOrder: 99
-  m_Sprite: {fileID: -2069660456029034469, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
+  m_Sprite: {fileID: 1753205982242350755, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -137,7 +137,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2530369942850805986}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.52, z: 0}
+  m_LocalPosition: {x: 0, y: 0.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6443827889331344884}
@@ -424,7 +424,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 15
   attackDuration: 0.33
-  maxHealth: 0
+  maxHealth: 3
   castPositions:
   - {fileID: 3408748927426436920}
   - {fileID: 3408748926589344822}
@@ -658,7 +658,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5134735080653730756}
   m_Layer: 0
-  m_Name: Player Inventory
+  m_Name: Inventory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -702,7 +702,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7126066925526322965}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.88, y: 0, z: 0}
+  m_LocalPosition: {x: 0.88, y: -0.9100001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6443827889331344884}
@@ -732,7 +732,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7493916092094010470}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.86, y: 0, z: 0}
+  m_LocalPosition: {x: -0.86, y: -0.91, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6443827889331344884}

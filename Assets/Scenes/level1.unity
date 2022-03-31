@@ -22597,10 +22597,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 912544473, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 12721193052276465, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
       propertyPath: markers.Array.size
       value: 3
@@ -22617,29 +22613,9 @@ PrefabInstance:
       propertyPath: markers.Array.data[2]
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 956935185925618532, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 978442232835889523, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.9100001
-      objectReference: {fileID: 0}
-    - target: {fileID: 1027174743703717104, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.91
-      objectReference: {fileID: 0}
-    - target: {fileID: 2935448080476554169, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 3408748927377674176, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
       propertyPath: inventory
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3408748927377674176, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: maxHealth
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3408748927377674234, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
       propertyPath: m_Name
@@ -22689,34 +22665,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5134735080653730756, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5141773164447572983, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 90efdae7dfaba3941856bb0611cad481, type: 3}
-    - target: {fileID: 6443827889331344884, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6648968279426898311, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_Name
-      value: Inventory
-      objectReference: {fileID: 0}
-    - target: {fileID: 6648968279426898311, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094780986816309979, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8141887589328687678, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.13
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eae8b7ea5f81a6842a62124d2eb22b29, type: 3}
 --- !u!1001 &5101480417835433863

@@ -50,11 +50,12 @@ MonoBehaviour:
   seanSprite: {fileID: -4393859362170001284, guid: 8d941ef0ae5eb204fbc3c0bb45f41594, type: 3}
   doctorSprite: {fileID: 5389387911156544634, guid: 8d941ef0ae5eb204fbc3c0bb45f41594, type: 3}
   HeartIcons:
-  - {fileID: -5843391103799036864, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
   - {fileID: -3727842135710763035, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
   - {fileID: -6050296909894318094, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
-  Heart: {fileID: 0}
-  horizontalOffset: 110
+  - {fileID: -3201709878794754465, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
+  Heart: {fileID: 6511847156878521319, guid: fc2f99b79d67cb743bd2c9b974f29d17, type: 3}
+  horizontalOffset: 90
+  maxHearts: 3
 --- !u!114 &1756547743657587959
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ public class DialogueManager : MonoBehaviour
     public AudioClip dialogueClose;
     public Sprite seanSprite;
     public Sprite doctorSprite;
-    public Sprite[] HeartIcons;
+    public Sprite[] HeartIcons; // 0 is heartFull, 1 is heartHalf, 2 is heartEmpty
     public GameObject Heart;
     private List<RectTransform> Hearts;
     public float horizontalOffset;

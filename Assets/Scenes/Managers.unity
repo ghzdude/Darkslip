@@ -555,18 +555,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2582961136026288515, guid: a4a3fabb033ca3846a6a82f5b335ee16, type: 3}
-      propertyPath: Heart
-      value: 
-      objectReference: {fileID: 6511847156878521319, guid: fc2f99b79d67cb743bd2c9b974f29d17, type: 3}
-    - target: {fileID: 2582961136026288515, guid: a4a3fabb033ca3846a6a82f5b335ee16, type: 3}
-      propertyPath: maxHearts
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 2582961136026288515, guid: a4a3fabb033ca3846a6a82f5b335ee16, type: 3}
-      propertyPath: horizontalOffset
-      value: 90
-      objectReference: {fileID: 0}
     - target: {fileID: 2582961136026288525, guid: a4a3fabb033ca3846a6a82f5b335ee16, type: 3}
       propertyPath: m_Name
       value: DialogueManager
