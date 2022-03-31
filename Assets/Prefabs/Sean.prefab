@@ -107,7 +107,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.8125, y: 0.875}
+  m_Size: {x: 1, y: 1.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -436,7 +436,7 @@ MonoBehaviour:
   - {fileID: 2530369942850805986}
   gunShot: {fileID: 8300000, guid: 368037174cfa7b644b9028819273637a, type: 3}
   dir: 0
-  inventory: {fileID: 0}
+  SceneController: {fileID: 0}
 --- !u!82 &6566976371245749992
 AudioSource:
   m_ObjectHideFlags: 0

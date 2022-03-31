@@ -22057,7 +22057,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5, y: 0.75}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -23196,10 +23196,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Clipboard
       objectReference: {fileID: 0}
-    - target: {fileID: 7996334548785319842, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
-      propertyPath: m_SortingOrder
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 7996334548785319843, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -23243,10 +23239,6 @@ PrefabInstance:
     - target: {fileID: 7996334548785319843, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7996334548785319844, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
-      propertyPath: sceneController
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}

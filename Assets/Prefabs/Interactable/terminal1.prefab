@@ -51,8 +51,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5625, y: 1.375}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 0.875, y: 0.3125}
+    newSize: {x: 0.875, y: 0.3125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -74,6 +74,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   activate: {fileID: 8300000, guid: f127e7316f85de843984deeb2d14a25c, type: 3}
+  markerIndex: 0
+  allowMarkerIndex: 0
 --- !u!82 &5374725188546558160
 AudioSource:
   m_ObjectHideFlags: 0
@@ -215,7 +217,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.875, y: 0.3125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
