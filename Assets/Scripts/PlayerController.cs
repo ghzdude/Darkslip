@@ -83,7 +83,7 @@ public class PlayerController : MonoBehaviour
                 attackCooldown = attackDuration;
             }
         }
-        else if (attackCooldown > 0)
+        else
         {
             attackCooldown -=  Time.deltaTime;
         }
@@ -109,19 +109,22 @@ public class PlayerController : MonoBehaviour
                 break;
         }
         audioController.PlayClip(gunShot, 1f);
-        
-        for (int i = 0; i < hits.Length; i++)
-        {
-            if (hits[i].collider != null && hits[i].transform.CompareTag("Wall"))
-            {
-                return;
-            }
 
-            if (hits[i].collider != null && hits[i].transform.CompareTag("Destructible"))
+        if (hits != null && hits.Length > 0)
+        {
+            for (int i = 0; i < hits.Length; i++)
             {
-                hits[i].transform.gameObject.GetComponent<HealthManager>().DecHealth(1, audioController);
-                // Debug.Log("object hit");
-                return;
+                if (hits[i].transform.CompareTag("Wall"))
+                {
+                    return;
+                }
+
+                if (hits[i].collider.GetComponent<HealthManager>() != null)
+                {
+                    hits[i].transform.GetComponent<HealthManager>().DecHealth(1, audioController);
+                    // Debug.Log("object hit");
+                    return;
+                }
             }
         }
     }
@@ -160,18 +163,23 @@ public class PlayerController : MonoBehaviour
             for (int i = 0; i < hits.Length; i++)
             {
                 GameObject hit = hits[i].transform.gameObject;
-                if (hit.CompareTag("Interactable"))
+                if (hit.GetComponent<Terminal>() != null)
                 {
                     audioController.PlayClip(hits[i].transform.GetComponent<Terminal>().activate, 0.66f);
-                    hit.GetComponent<Terminal>().Fire(audioController);
+                    hit.GetComponent<Terminal>().Fire(0.66f, transform);
                     return;
                 }
 
-                if (hit.CompareTag("Collectable"))
+                if (hit.GetComponent<Collectable>()  != null)
                 {
                     hit.GetComponent<Collectable>().Fire(audioController, transform.GetChild(0));
                     SceneController.GetInventoryManager().AddItem(hit.GetComponent<Collectable>());
                     return;
+                }
+
+                if (hit.GetComponent<CreateDialogue>() != null)
+                {
+                    hit.GetComponent<CreateDialogue>().EnableDialogueBox();
                 }
             }
         }

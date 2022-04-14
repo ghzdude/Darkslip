@@ -17,14 +17,14 @@ public class Terminal : MonoBehaviour
         src = gameObject.GetComponent<AudioSource>();
     }
 
-    public void Fire(AudioController audio)
+    public void Fire(float volume, Transform Player)
     {
         // Debug.Log("Fire");
-        audio.PlayClip(activate, 0.66f, src);
+        src.PlayOneShot(activate, volume);
         switch (target.tag)
         {
             case "Door":
-                target.GetComponent<DoorController>().OpenDoor(audio);
+                target.GetComponent<DoorController>().OpenDoor();
                 break;
             case "SceneController":
                 target.GetComponent<SceneController>().LoadCredit();
@@ -35,7 +35,7 @@ public class Terminal : MonoBehaviour
         }
 
         if (allowMarkerIndex)
-            audio.GetComponent<NavigationController>().SetMarkerIndex(markerIndex);
+            Player.GetComponent<NavigationController>().SetMarkerIndex(markerIndex);
         allowMarkerIndex = false;
     }
 }

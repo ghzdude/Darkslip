@@ -13,6 +13,7 @@ public class DialogueManager : MonoBehaviour
     public AudioClip dialogueClose;
     public Sprite seanSprite;
     public Sprite doctorSprite;
+    public GameObject fullbright;
     public Sprite[] HeartIcons; // 0 is heartFull, 1 is heartHalf, 2 is heartEmpty
     public GameObject Heart;
     private List<RectTransform> Hearts;
@@ -26,28 +27,33 @@ public class DialogueManager : MonoBehaviour
     private Transform InfoPanel;
     private Transform DebugPanel;
     private Transform HealthContainer;
+    private Slider sdr_music;
+    private Slider sdr_sfx;
     private Text DialogueText;
     private Text InfoText;
     private AudioController Audio;
     private float timer = 0;
     private List<CreateDialogue> Dialogues;
 
-    public void UpdateCanvas(RectTransform Canvas, Transform Player, List<CreateDialogue> Dialogues) // Called once per scene load
+    private void Awake()
     {
-        this.Dialogues = Dialogues;
-        PauseMenu = Canvas.GetChild(4);
-        InventoryPanel = Canvas.GetChild(3);
-        DialoguePanel = Canvas.GetChild(1);
-        InfoPanel = Canvas.GetChild(0);
-        HealthContainer = Canvas.GetChild(5);
+        typer = GetComponent<TypeWriterFX>();
+    }
+
+    public void SetCanvasObjects (RectTransform canvas)
+    {
+        PauseMenu = canvas.GetChild(4);
+        InventoryPanel = canvas.GetChild(3);
+        DialoguePanel = canvas.GetChild(1);
+        InfoPanel = canvas.GetChild(0);
+        HealthContainer = canvas.GetChild(5);
         DebugPanel = PauseMenu.GetChild(0);
         DialogueText = DialoguePanel.GetChild(0).GetComponent<Text>();
         InfoText = InfoPanel.GetChild(0).GetComponent<Text>();
         Holder = DialoguePanel.GetChild(1).GetChild(0).GetComponent<Image>();
-        typer = GetComponent<TypeWriterFX>();
-        this.Player = Player;
-        Audio = Player.GetComponent<AudioController>();
         Holder.sprite = null;
+        sdr_music = PauseMenu.GetChild(5).GetComponent<Slider>();
+        sdr_sfx = PauseMenu.GetChild(6).GetComponent<Slider>();
 
         if (HealthContainer.childCount == 0)
         {
@@ -59,6 +65,18 @@ public class DialogueManager : MonoBehaviour
             }
             // Debug.Log("Hearts generated");
         }
+
+    }
+
+    public void SetPlayer(Transform player)
+    {
+        Player = player;
+        Audio = Player.GetComponent<AudioController>();
+    }
+
+    public void SetDialogue(List<CreateDialogue> dialogues)
+    {
+        Dialogues = dialogues;
 
         if (Dialogues != null)
         {
@@ -104,6 +122,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         UpdateHealthGUI(Player.GetComponent<PlayerController>());
+        
     }
 
     public void SetSprite(Enums.character character)
@@ -229,8 +248,18 @@ public class DialogueManager : MonoBehaviour
         return maxHearts;
     }
 
-    public Slider GetSlider(string name)
+    public float GetMusicSliderValue()
     {
-        return PauseMenu.Find(string.Format("sdr_{0}", name)).GetComponent<Slider>();
+        return sdr_music.normalizedValue;
+    }
+
+    public float GetSFXSliderValue()
+    {
+        return sdr_sfx.normalizedValue;
+    }
+
+    public void ToggleFullbright()
+    {
+        fullbright.SetActive(!fullbright.activeInHierarchy);
     }
 }

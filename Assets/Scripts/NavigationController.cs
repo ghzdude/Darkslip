@@ -13,9 +13,16 @@ public class NavigationController : MonoBehaviour
 
     private void Start()
     {
-        markers = new List<Transform>(GameObject.Find("Navigation Markers").GetComponentsInChildren<Transform>());
-        markers.RemoveAt(0);
-        SetMarkerIndex(0);
+        if (GameObject.Find("Navigation Markers") != null)
+        {
+            markers = new List<Transform>(GameObject.Find("Navigation Markers").GetComponentsInChildren<Transform>());
+            markers.RemoveAt(0);
+            SetMarkerIndex(0);
+        }
+        else
+        {
+            pointer.gameObject.SetActive(false);
+        }
     }
 
     private void OnEnable()
@@ -30,9 +37,16 @@ public class NavigationController : MonoBehaviour
 
     private void ResetMarkers(Scene scene, LoadSceneMode mode)
     {
-        markers = new List<Transform>(GameObject.Find("Navigation Markers").GetComponentsInChildren<Transform>());
-        markers.RemoveAt(0);
-        SetMarkerIndex(0);
+        if (GameObject.Find("Navigation Markers") != null)
+        {
+            markers = new List<Transform>(GameObject.Find("Navigation Markers").GetComponentsInChildren<Transform>());
+            markers.RemoveAt(0);
+            SetMarkerIndex(0);
+        }
+        else
+        {
+            pointer.gameObject.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -42,11 +56,8 @@ public class NavigationController : MonoBehaviour
         // rotates arrow to face current objective
         if (markers != null && markers.Count > 0)
         {
-            gameObject.SetActive(true);
             pointer.localEulerAngles = LookAt2D(markers[GetMarkerIndex].position);
         }
-        else
-            gameObject.SetActive(false);
     }
 
     public void SetMarkerIndex(int i) => GetMarkerIndex = i;

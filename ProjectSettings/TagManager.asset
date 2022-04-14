@@ -16,6 +16,8 @@ TagManager:
   - ItemEntry
   - DialogueManager
   - Canvas
+  - Item Entry
+  - Music
   layers:
   - Default
   - TransparentFX
