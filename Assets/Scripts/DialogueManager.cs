@@ -21,6 +21,8 @@ public class DialogueManager : MonoBehaviour
     public int maxHearts;
     private Image Holder;
     private Transform Player;
+    private Transform GameMenu;
+    private Transform MainMenu;
     private Transform PauseMenu;
     private Transform InventoryPanel;
     private Transform DialoguePanel;
@@ -42,11 +44,15 @@ public class DialogueManager : MonoBehaviour
 
     public void SetCanvasObjects (RectTransform canvas)
     {
-        PauseMenu = canvas.GetChild(4);
-        InventoryPanel = canvas.GetChild(3);
-        DialoguePanel = canvas.GetChild(1);
-        InfoPanel = canvas.GetChild(0);
-        HealthContainer = canvas.GetChild(5);
+        GameMenu = canvas.GetChild(1);
+        MainMenu = canvas.GetChild(0);
+
+        PauseMenu = GameMenu.GetChild(4);
+        InventoryPanel = GameMenu.GetChild(3);
+        DialoguePanel = GameMenu.GetChild(1);
+        InfoPanel = GameMenu.GetChild(0);
+        HealthContainer = GameMenu.GetChild(5);
+
         DebugPanel = PauseMenu.GetChild(0);
         DialogueText = DialoguePanel.GetChild(0).GetComponent<Text>();
         InfoText = InfoPanel.GetChild(0).GetComponent<Text>();
@@ -55,17 +61,25 @@ public class DialogueManager : MonoBehaviour
         sdr_music = PauseMenu.GetChild(5).GetComponent<Slider>();
         sdr_sfx = PauseMenu.GetChild(6).GetComponent<Slider>();
 
+
+        if (fullbright != null && fullbright.activeInHierarchy)
+        {
+            fullbright.SetActive(false);
+        }
+    }
+
+    public void InitializeHealthObjects()
+    {
         if (HealthContainer.childCount == 0)
         {
             Hearts = new List<RectTransform>();
-            for (int i = 0; i < maxHearts; i++)
+            for (int i = 0; i<maxHearts; i++)
             {
                 Hearts.Add(Instantiate(Heart, HealthContainer).GetComponent<RectTransform>());
-                Hearts[i].anchoredPosition = new Vector2(Hearts[i].anchoredPosition.x + (horizontalOffset * i), Hearts[i].anchoredPosition.y);
-            }
+                Hearts[i].anchoredPosition = new Vector2(Hearts[i].anchoredPosition.x + (horizontalOffset* i), Hearts[i].anchoredPosition.y);
+}
             // Debug.Log("Hearts generated");
         }
-
     }
 
     public void SetPlayer(Transform player)
@@ -95,6 +109,21 @@ public class DialogueManager : MonoBehaviour
         InventoryPanel.gameObject.SetActive(false);
     }
 
+    public void InitializeMainMenu()
+    {
+        MainMenu.gameObject.SetActive(true);
+        GameMenu.gameObject.SetActive(false);
+    }
+
+    public void InitializeGameMenu()
+    {
+        GameMenu.gameObject.SetActive(true);
+        MainMenu.gameObject.SetActive(false);
+    }
+
+    public RectTransform GetInventoryPanel() => InventoryPanel.GetComponent<RectTransform>();
+
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -103,7 +132,7 @@ public class DialogueManager : MonoBehaviour
             InventoryPanel.gameObject.SetActive(!InventoryPanel.gameObject.activeInHierarchy);
         }
 
-        if (InfoPanel.gameObject.activeInHierarchy || DialoguePanel.gameObject.activeInHierarchy)
+        if ((InfoPanel.gameObject.activeInHierarchy || DialoguePanel.gameObject.activeInHierarchy) && Player != null)
         {
             if (Input.GetKeyDown(KeyCode.Z) && typer.completed)
             {
@@ -121,7 +150,8 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        UpdateHealthGUI(Player.GetComponent<PlayerController>());
+        if (Player != null)
+            UpdateHealthGUI(Player.GetComponent<PlayerController>());
         
     }
 
@@ -144,7 +174,6 @@ public class DialogueManager : MonoBehaviour
     public void EnableDialogueBox(string text, Enums.character character)
     {
         Audio.PlayClip(dialogueOpen, 0.66f);
-        // Debug.Log("dialogue opened");
         Time.timeScale = 0;
         SetSprite(character);
         DialoguePanel.gameObject.SetActive(true);
@@ -161,21 +190,21 @@ public class DialogueManager : MonoBehaviour
         InfoText.text = text;
         typer.TypeWriter(InfoText);
         timer = 10f;
-        // Debug.Log("info box opened");
     }
 
     public void DisableDialogueBox()
     {
         typer.Stop();
-        Audio.PlayClip(dialogueClose, 0.66f);
-        if (InfoPanel.gameObject.activeInHierarchy && InfoPanel != null && Audio != null)
+        if (Audio != null)
+            Audio.PlayClip(dialogueClose, 0.66f);
+
+        if (InfoPanel.gameObject.activeInHierarchy && InfoPanel != null)
         {
-            // Debug.Log("dialogue closed");
             InfoPanel.gameObject.SetActive(false);
             Time.timeScale = 1;
         }
 
-        if (DialoguePanel.gameObject.activeInHierarchy && DialoguePanel != null && Audio != null)
+        if (DialoguePanel.gameObject.activeInHierarchy && DialoguePanel != null)
         {
             DialoguePanel.gameObject.SetActive(false);
             Time.timeScale = 1;

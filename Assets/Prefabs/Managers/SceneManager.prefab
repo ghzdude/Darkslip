@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 984711388898731315}
   - component: {fileID: 984711388898731314}
+  - component: {fileID: 1465381410}
   m_Layer: 0
   m_Name: SceneManager
   m_TagString: SceneController
@@ -43,3 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f237120da6c6c148b3254d0a690c4f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicVolume: 0
+  sfxVolume: 0
+--- !u!81 &1465381410
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 984711388898731313}
+  m_Enabled: 1

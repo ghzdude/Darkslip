@@ -6,6 +6,7 @@ public class DoorController : MonoBehaviour
 {
     public AudioClip openDoor;
     public AudioClip closeDoor;
+    public bool startOpen;
     private Animator anim;
     private AudioSource src;
     /*public Transform doorSprite;
@@ -19,6 +20,10 @@ public class DoorController : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         src = GetComponent<AudioSource>();
+        if (startOpen)
+        {
+            anim.SetBool("startOpen", startOpen);
+        }
     }
 
     private void Update()

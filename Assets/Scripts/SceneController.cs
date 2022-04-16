@@ -18,7 +18,8 @@ public class SceneController : MonoBehaviour
     private void Update()
     {
         Music.volume = DialogueManager.GetMusicSliderValue();
-        SFX.volume = DialogueManager.GetSFXSliderValue();
+        if(SFX != null)
+            SFX.volume = DialogueManager.GetSFXSliderValue();
     }
 
     // Required Signature (Scene scene, LoadSceneMode mode)
@@ -34,7 +35,6 @@ public class SceneController : MonoBehaviour
 
     private void ResetSceneParams(Scene scene, LoadSceneMode mode)
     {
-        
         // print(string.Format("Active Scene was: {0}", SceneManager.GetActiveScene().name));
         if (scene.buildIndex > 0)
         {
@@ -45,8 +45,9 @@ public class SceneController : MonoBehaviour
         if (scene.buildIndex == 0)
         {
             SceneManager.LoadScene(1, LoadSceneMode.Additive);
-        }*/
-        
+        }
+        */
+
         // print(string.Format("Scene {0} has loaded", scene.name));
         // Search Active Scene
         GameObject[] Objects = SceneManager.GetActiveScene().GetRootGameObjects();
@@ -66,8 +67,14 @@ public class SceneController : MonoBehaviour
                 default:
                     break;
             }
+
+            if (obj.GetComponent<AudioListener>() != null && 
+                gameObject.GetComponent<AudioListener>() != null &&
+                !gameObject.Equals(obj))
+            {
+                Destroy(gameObject.GetComponent<AudioListener>());
+            }
         }
-        
 
         // Search Managers Scene
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
@@ -75,24 +82,32 @@ public class SceneController : MonoBehaviour
         Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<RectTransform>();
         Music = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
 
-        if (scene.buildIndex > 0 && scene.name != "credits") // Once level1... is loaded
+        DialogueManager.SetCanvasObjects(Canvas);
+        if (scene.name != "credits")
         {
-            DialogueManager.SetCanvasObjects(Canvas);
-            DialogueManager.SetDialogue(Dialogue);
-            DialogueManager.SetPlayer(Player);
-            Player.GetComponent<PlayerController>().SceneController = this;
-            InventoryManager.InventoryPanel = Canvas.GetChild(3).GetComponent<RectTransform>();
-            // musicVolume = DialogueManager.GetSlider("musicVolume").value;
-            // sfxVolume = DialogueManager.GetSlider("sfxVolume").value;
+            if (Player != null)
+            {
+                DialogueManager.SetPlayer(Player);
+                Player.GetComponent<PlayerController>().SceneController = this;
+            }
+            InventoryManager.InventoryPanel = DialogueManager.GetInventoryPanel();
             Deduplicate("Canvas");
             Deduplicate("DialogueManager");
             Deduplicate("SceneController");
         }
 
+        if (scene.buildIndex == 0) // Main Menu Only
+        {
+            DialogueManager.InitializeMainMenu();
+        }
+
         if (scene.buildIndex == 1) // First Level only
         {
             DialogueManager.InitializeCanvas();
+            DialogueManager.InitializeGameMenu();
             InventoryManager.ClearInventory();
+            DialogueManager.SetDialogue(Dialogue);
+            DialogueManager.InitializeHealthObjects();
         }
     }
 
@@ -100,10 +115,18 @@ public class SceneController : MonoBehaviour
     {
         InventoryManager.ClearInventory();
         Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.UnloadSceneAsync(currentScene);
-        SceneManager.LoadScene(currentScene.name, LoadSceneMode.Additive);
+        if (currentScene.buildIndex > 0)
+        {
+            SceneManager.UnloadSceneAsync(currentScene);
+            SceneManager.LoadScene(currentScene.name, LoadSceneMode.Additive);
+        }
         Time.timeScale = 1;
         // print(string.Format("scene: {0} has been reset", currentScene.name));
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene(1, LoadSceneMode.Additive);
     }
 
     public void QuitGame()
