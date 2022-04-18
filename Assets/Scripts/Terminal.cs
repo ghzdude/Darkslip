@@ -10,6 +10,7 @@ public class Terminal : MonoBehaviour
     private AudioSource src;
     public int markerIndex;
     public bool allowMarkerIndex;
+    public bool quitGame;
 
     // Start is called before the first frame update
     void Start()
@@ -21,18 +22,18 @@ public class Terminal : MonoBehaviour
     {
         // Debug.Log("Fire");
         src.PlayOneShot(activate, volume);
-        switch (target.tag)
+        if (target.GetComponent<DoorController>() != null)
         {
-            case "Door":
-                target.GetComponent<DoorController>().OpenDoor();
-                break;
-            case "SceneController":
-                target.GetComponent<SceneController>().LoadCredit();
-                break;
-            default:
-                Debug.Log("Nothing Happened, Check Your Tags.");
-                break;
+            target.GetComponent<DoorController>().OpenDoor();
+            return;
         }
+        if (quitGame)
+        {
+            GameObject.FindGameObjectWithTag("SceneController ").GetComponent<SceneController>().QuitGame();
+        }
+
+        Debug.Log("Nothing Happened, Check Your Tags.");
+                
 
         if (allowMarkerIndex)
             Player.GetComponent<NavigationController>().SetMarkerIndex(markerIndex);

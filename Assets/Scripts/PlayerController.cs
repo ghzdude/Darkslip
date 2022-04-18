@@ -118,6 +118,11 @@ public class PlayerController : MonoBehaviour
                 {
                     return;
                 }
+                if (hits[i].transform.GetComponentInParent<EnemyBehavior>() != null)
+                {
+                    hits[i].collider.GetComponentInParent<EnemyBehavior>().DecHealth();
+                    return;
+                }
 
                 if (hits[i].collider.GetComponent<HealthManager>() != null)
                 {
