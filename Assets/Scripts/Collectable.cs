@@ -8,12 +8,16 @@ public class Collectable : MonoBehaviour
     private DialogueManager DialogueManager;
     public bool characterResponse;
     public bool shouldDisable;
+    public GameObject glowingSprite;
     [HideInInspector] public Sprite icon;
 
     private void Start()
     {
         icon = GetComponent<SpriteRenderer>().sprite;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+
+        if (transform.Find(glowingSprite.name) == null)
+            Instantiate(glowingSprite, transform).transform.localPosition = Vector3.zero;
     }
     public void Fire(AudioController controller, Transform plrInventory)
     {

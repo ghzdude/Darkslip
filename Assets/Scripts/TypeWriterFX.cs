@@ -43,11 +43,9 @@ public class TypeWriterFX : MonoBehaviour
             startTxt[index] = stored[index];
             txt.text += startTxt[index];
             index++;
-            // Debug.Log("index: " + index);
             yield return new WaitForSecondsRealtime(revealSpeed/100);
         }
         completed = true;
-        // Debug.Log("completed: " + completed);
         yield return null;
     }
 }

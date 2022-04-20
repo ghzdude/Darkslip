@@ -19,6 +19,7 @@ public class DialogueManager : MonoBehaviour
     private List<RectTransform> Hearts;
     public float horizontalOffset;
     public int maxHearts;
+    public bool dialogueActive;
     private Image Holder;
     private Transform Player;
     private Transform GameMenu;
@@ -124,28 +125,28 @@ public class DialogueManager : MonoBehaviour
     public RectTransform GetInventoryPanel() => InventoryPanel.GetComponent<RectTransform>();
 
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
             PauseMenu.gameObject.SetActive(!PauseMenu.gameObject.activeInHierarchy);
             InventoryPanel.gameObject.SetActive(!InventoryPanel.gameObject.activeInHierarchy);
         }
 
-        if ((InfoPanel.gameObject.activeInHierarchy || DialoguePanel.gameObject.activeInHierarchy) && Player != null)
+        if (DialoguePanel.gameObject.activeInHierarchy || InfoPanel.gameObject.activeInHierarchy)
         {
-            if (Input.GetKeyDown(KeyCode.Z) && typer.completed)
-            {
+            dialogueActive = true;
+        }
+
+        if (dialogueActive && Player != null) {
+            if (Input.GetKeyDown(KeyCode.Z) && typer.completed) {
                 DisableDialogueBox();
+                dialogueActive = false;
             }
 
-            if (timer <= 0)
-            {
+            if (timer <= 0) {
                 timer = -1f;
                 DisableDialogueBox();
-            }
-            else
-            {
+                dialogueActive = false;
+            } else {
                 timer -= 1 * Time.unscaledDeltaTime;
             }
         }
@@ -180,6 +181,7 @@ public class DialogueManager : MonoBehaviour
         DialogueText.text = text;
         typer.TypeWriter(DialogueText);
         timer = 10f;
+        dialogueActive = true;
     }
 
     public void EnableDialogueBox(string text)
@@ -190,6 +192,7 @@ public class DialogueManager : MonoBehaviour
         InfoText.text = text;
         typer.TypeWriter(InfoText);
         timer = 10f;
+        dialogueActive = true;
     }
 
     public void DisableDialogueBox()

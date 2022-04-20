@@ -363,6 +363,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 31.876
       objectReference: {fileID: 0}
+    - target: {fileID: 7996334548785319844, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
+      propertyPath: TextOnPickup
+      value: The code to the terminal is "4366."
+      objectReference: {fileID: 0}
+    - target: {fileID: 7996334548785319844, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
+      propertyPath: internalName
+      value: Terminal Access
+      objectReference: {fileID: 0}
+    - target: {fileID: 7996334548785319844, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
+      propertyPath: characterResponse
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63f0a3b33abb27547841b510da565cb8, type: 3}
 --- !u!114 &1336943723 stripped

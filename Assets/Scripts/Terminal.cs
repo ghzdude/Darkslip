@@ -8,6 +8,7 @@ public class Terminal : MonoBehaviour
     public GameObject target;
     public AudioClip activate;
     private AudioSource src;
+    public GameObject glowingSprite;
     public int markerIndex;
     public bool allowMarkerIndex;
     public bool quitGame;

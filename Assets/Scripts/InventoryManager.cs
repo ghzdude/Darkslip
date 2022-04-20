@@ -12,8 +12,14 @@ public class InventoryManager : MonoBehaviour
     public GameObject listEntry;
     public float verticalOffset;
     private int count = 1;
+    private DialogueManager dialogueManager;
     private string format;
-    
+
+    private void Start()
+    {
+        dialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+    }
+
     public void ClearInventory()
     {
         // Set Variables
@@ -58,12 +64,13 @@ public class InventoryManager : MonoBehaviour
             itemListCount.Add(count);
             entries.Add(Instantiate(listEntry, InventoryPanel));
             int j = entries.Count - 1;
-            entries[j].GetComponentInChildren<Image>().sprite = item.icon;
+            entries[j].transform.GetChild(0).GetComponent<Image>().sprite = item.icon;
             entries[j].GetComponentInChildren<Text>().text = string.Format(format, count, item.internalName);
             entries[j].GetComponent<RectTransform>().anchoredPosition = new Vector2(
                 entries[j].GetComponent<RectTransform>().anchoredPosition.x, 
                 entries[j].GetComponent<RectTransform>().anchoredPosition.y - (verticalOffset * j));
 
+            entries[j].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => RetrieveDialouge(j, itemList[j].characterResponse));
             // Debug.Log(string.Format("{0} has been added at the item slot {1} with the amount of {2}", itemList[j].name, j, itemListCount[j]));
         }
     }
@@ -71,5 +78,13 @@ public class InventoryManager : MonoBehaviour
     public void RemoveItem(Collectable item)
     {
         itemList.Remove(item);
+    }
+
+    public void RetrieveDialouge (int index, bool character)
+    {
+        if (!dialogueManager.dialogueActive && character)
+            dialogueManager.EnableDialogueBox(itemList[index].TextOnPickup, Enums.character.Sean);
+        else
+            dialogueManager.EnableDialogueBox(itemList[index].TextOnPickup);
     }
 }
