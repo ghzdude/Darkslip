@@ -6,6 +6,7 @@ public class Collectable : MonoBehaviour
     public string internalName;
     [TextArea(10,10)] public string TextOnPickup;
     private DialogueManager DialogueManager;
+    private Transform Player;
     public bool characterResponse;
     public bool shouldDisable;
     public GameObject glowingSprite;
@@ -15,24 +16,27 @@ public class Collectable : MonoBehaviour
     {
         icon = GetComponent<SpriteRenderer>().sprite;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+        Player = GameObject.FindGameObjectWithTag("Player").transform;
 
         if (transform.Find(glowingSprite.name) == null)
             Instantiate(glowingSprite, transform).transform.localPosition = Vector3.zero;
     }
-    public void Fire(AudioController controller, Transform plrInventory)
+
+    public void Fire()
     {
-        if (plrInventory != null && !characterResponse)
+        if (!DialogueManager.dialogueActive && Player != null)
         {
-            DialogueManager.EnableDialogueBox(TextOnPickup);
-            transform.SetParent(plrInventory);
-        }
-        else if (plrInventory != null && characterResponse)
-        {
-            DialogueManager.EnableDialogueBox(TextOnPickup, Enums.character.Sean);
-            transform.SetParent(plrInventory);
+            if (!characterResponse)
+                DialogueManager.EnableDialogueBox(TextOnPickup);
+            else
+                DialogueManager.EnableDialogueBox(TextOnPickup, Enums.character.Sean);
+
+            transform.SetParent(Player.GetChild(0));
         }
         else
-            Debug.Log("Invalid transform, player inventory not updated!");
+        {
+            Debug.Log("Player transform is null, collectable not parented to player inventory!");
+        }
 
         if (shouldDisable)
         {

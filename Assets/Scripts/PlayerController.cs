@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     private float h;
     private float v;
     private int health;
+    private DialogueManager DialogueManager;
     [HideInInspector] public int maxHealth;
     private Transform Camera;
     public GameObject[] castPositions;
@@ -32,8 +33,10 @@ public class PlayerController : MonoBehaviour
         audioController = gameObject.GetComponent<AudioController>();
         nav = gameObject.GetComponent<NavigationController>();
         Camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        maxHealth = SceneController.GetDialogueManager().GetMaxHearts() * 2;
         health = maxHealth; // Set Health
+        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+        SceneController = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
+        maxHealth = SceneController.GetDialogueManager().GetMaxHearts() * 2;
     }
     
     void FixedUpdate()
@@ -59,10 +62,12 @@ public class PlayerController : MonoBehaviour
         CheckMovement(rb.velocity.x, rb.velocity.y);
         Camera.position = new Vector3(transform.position.x, transform.position.y, Camera.position.z);
 
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            Interact();
+        if (!DialogueManager.dialogueActive) {
+            if (Input.GetKeyDown(KeyCode.Z))
+                Interact();
         }
+
+        
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.timeScale > 0)
         {
@@ -108,7 +113,7 @@ public class PlayerController : MonoBehaviour
             default:
                 break;
         }
-        audioController.PlayClip(gunShot, 1f);
+        audioController.PlayClip(gunShot, DialogueManager.GetSFXSliderValue());
 
         if (hits != null && hits.Length > 0)
         {
@@ -118,6 +123,7 @@ public class PlayerController : MonoBehaviour
                 {
                     return;
                 }
+
                 if (hits[i].transform.GetComponentInParent<EnemyBehavior>() != null)
                 {
                     hits[i].collider.GetComponentInParent<EnemyBehavior>().DecHealth();
@@ -127,7 +133,6 @@ public class PlayerController : MonoBehaviour
                 if (hits[i].collider.GetComponent<HealthManager>() != null)
                 {
                     hits[i].transform.GetComponent<HealthManager>().DecHealth(1, audioController);
-                    // Debug.Log("object hit");
                     return;
                 }
             }
@@ -170,14 +175,14 @@ public class PlayerController : MonoBehaviour
                 GameObject hit = hits[i].transform.gameObject;
                 if (hit.GetComponent<Terminal>() != null)
                 {
-                    audioController.PlayClip(hits[i].transform.GetComponent<Terminal>().activate, 0.66f);
-                    hit.GetComponent<Terminal>().Fire(0.66f, transform);
+                    // audioController.PlayClip(hits[i].transform.GetComponent<Terminal>().activate, 0.66f);
+                    hit.GetComponent<Terminal>().Fire();
                     return;
                 }
 
                 if (hit.GetComponent<Collectable>()  != null)
                 {
-                    hit.GetComponent<Collectable>().Fire(audioController, transform.GetChild(0));
+                    hit.GetComponent<Collectable>().Fire();
                     SceneController.GetInventoryManager().AddItem(hit.GetComponent<Collectable>());
                     return;
                 }

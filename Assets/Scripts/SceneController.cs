@@ -11,7 +11,7 @@ public class SceneController : MonoBehaviour
     private InventoryManager InventoryManager;
     private AudioSource Music;
     private AudioSource SFX;
-    private List<CreateDialogue> Dialogue;
+    private bool initialized;
     [HideInInspector] public float musicVolume;
     [HideInInspector] public float sfxVolume;
 
@@ -21,7 +21,10 @@ public class SceneController : MonoBehaviour
         if(SFX != null)
             SFX.volume = DialogueManager.GetSFXSliderValue();
     }
-
+    private void Awake()
+    {
+        initialized = false;
+    }
     // Required Signature (Scene scene, LoadSceneMode mode)
     private void OnEnable()
     {
@@ -35,48 +38,40 @@ public class SceneController : MonoBehaviour
 
     private void ResetSceneParams(Scene scene, LoadSceneMode mode)
     {
-        // print(string.Format("Active Scene was: {0}", SceneManager.GetActiveScene().name));
-        if (scene.buildIndex > 0)
+        if (scene.buildIndex > 0 && !initialized)
         {
+            DialogueManager.InitializeCanvas();
+            DialogueManager.InitializeGameMenu();
+            DialogueManager.InitializeHealthObjects();
+            initialized = true;
+
+            // Search Active Scene
+            GameObject[] Objects = scene.GetRootGameObjects();
+            for (int i = 0; i < Objects.Length; i++)
+            {
+                GameObject obj = Objects[i];
+                switch (obj.tag)
+                {
+                    case "Player":
+                        Player = obj.transform;
+                        SFX = Player.GetComponent<AudioSource>();
+                        break;
+                    default:
+                        break;
+                }
+
+                if (obj.GetComponent<AudioListener>() != null &&
+                    gameObject.GetComponent<AudioListener>() != null &&
+                    !gameObject.Equals(obj))
+                {
+                    Destroy(gameObject.GetComponent<AudioListener>());
+                }
+            }
+
             SceneManager.SetActiveScene(scene);
-
         }
-        /*
-        if (scene.buildIndex == 0)
-        {
-            SceneManager.LoadScene(1, LoadSceneMode.Additive);
-        }
-        */
-
-        // print(string.Format("Scene {0} has loaded", scene.name));
-        // Search Active Scene
-        GameObject[] Objects = SceneManager.GetActiveScene().GetRootGameObjects();
-        for (int i = 0; i < Objects.Length; i++)
-        {
-            GameObject obj = Objects[i];
-            switch (obj.tag)
-            {
-                case "Player":
-                    Player = obj.transform;
-                    SFX = Player.GetComponent<AudioSource>();
-                    break;
-                case "Dialogue":
-                    Dialogue = new List<CreateDialogue>();
-                    Dialogue.AddRange(obj.GetComponentsInChildren<CreateDialogue>());
-                    break;
-                default:
-                    break;
-            }
-
-            if (obj.GetComponent<AudioListener>() != null && 
-                gameObject.GetComponent<AudioListener>() != null &&
-                !gameObject.Equals(obj))
-            {
-                Destroy(gameObject.GetComponent<AudioListener>());
-            }
-        }
-
-        // Search Managers Scene
+        
+        // Search Any Loaded Scene
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         InventoryManager = GameObject.FindGameObjectWithTag("InventoryManager").GetComponent<InventoryManager>();
         Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<RectTransform>();
@@ -88,12 +83,12 @@ public class SceneController : MonoBehaviour
             if (Player != null)
             {
                 DialogueManager.SetPlayer(Player);
-                Player.GetComponent<PlayerController>().SceneController = this;
+                // Player.GetComponent<PlayerController>().SceneController = this;
             }
             InventoryManager.InventoryPanel = DialogueManager.GetInventoryPanel();
-            Deduplicate("Canvas");
-            Deduplicate("DialogueManager");
-            Deduplicate("SceneController");
+            // Deduplicate("Canvas");
+            // Deduplicate("DialogueManager");
+            // Deduplicate("SceneController");
         }
 
         if (scene.buildIndex == 0) // Main Menu Only
@@ -103,11 +98,8 @@ public class SceneController : MonoBehaviour
 
         if (scene.buildIndex == 1) // First Level only
         {
-            DialogueManager.InitializeCanvas();
-            DialogueManager.InitializeGameMenu();
             InventoryManager.ClearInventory();
-            DialogueManager.SetDialogue(Dialogue);
-            DialogueManager.InitializeHealthObjects();
+            // DialogueManager.SetDialogue(Dialogue);
         }
     }
 

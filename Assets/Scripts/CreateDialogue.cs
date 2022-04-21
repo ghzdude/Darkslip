@@ -9,7 +9,13 @@ public class CreateDialogue : MonoBehaviour
     public bool infoBox = true;
     public bool shouldDisable = true;
     public Enums.character character;
-    public DialogueManager DialogueManager;
+    private DialogueManager DialogueManager;
+    public CreateDialogue nextDialogue;
+
+    private void Awake()
+    {
+        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -18,10 +24,18 @@ public class CreateDialogue : MonoBehaviour
 
     public void EnableDialogueBox()
     {
-        if (infoBox)
-            DialogueManager.EnableDialogueBox(text);
-        else
-            DialogueManager.EnableDialogueBox(text, character);
+        if (!DialogueManager.dialogueActive)
+        {
+            if (infoBox)
+                DialogueManager.EnableDialogueBox(text);
+            else
+                DialogueManager.EnableDialogueBox(text, character);
+        }
+
+        if (nextDialogue != null)
+        {
+            DialogueManager.SetNextDialogue(nextDialogue);
+        }
 
         if (shouldDisable)
             gameObject.SetActive(false);

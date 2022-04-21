@@ -20,6 +20,7 @@ public class DialogueManager : MonoBehaviour
     public float horizontalOffset;
     public int maxHearts;
     public bool dialogueActive;
+    private CreateDialogue nextDialogue;
     private Image Holder;
     private Transform Player;
     private Transform GameMenu;
@@ -30,13 +31,19 @@ public class DialogueManager : MonoBehaviour
     private Transform InfoPanel;
     private Transform DebugPanel;
     private Transform HealthContainer;
+    private Transform CodeEntry;
+    private Text CodeEntryField;
+    private Button[] KeyPadButtons;
+    private Button KeyCancel;
+    private Button KeyEnter;
+    private Button KeyClose;
     private Slider sdr_music;
     private Slider sdr_sfx;
     private Text DialogueText;
     private Text InfoText;
     private AudioController Audio;
     private float timer = 0;
-    private List<CreateDialogue> Dialogues;
+    private Terminal terminal;
 
     private void Awake()
     {
@@ -48,11 +55,12 @@ public class DialogueManager : MonoBehaviour
         GameMenu = canvas.GetChild(1);
         MainMenu = canvas.GetChild(0);
 
-        PauseMenu = GameMenu.GetChild(4);
-        InventoryPanel = GameMenu.GetChild(3);
-        DialoguePanel = GameMenu.GetChild(1);
         InfoPanel = GameMenu.GetChild(0);
+        DialoguePanel = GameMenu.GetChild(1);
+        InventoryPanel = GameMenu.GetChild(3);
+        PauseMenu = GameMenu.GetChild(4);
         HealthContainer = GameMenu.GetChild(5);
+        CodeEntry = GameMenu.GetChild(6);
 
         DebugPanel = PauseMenu.GetChild(0);
         DialogueText = DialoguePanel.GetChild(0).GetComponent<Text>();
@@ -61,7 +69,11 @@ public class DialogueManager : MonoBehaviour
         Holder.sprite = null;
         sdr_music = PauseMenu.GetChild(5).GetComponent<Slider>();
         sdr_sfx = PauseMenu.GetChild(6).GetComponent<Slider>();
-
+        KeyPadButtons = CodeEntry.GetChild(0).GetChild(2).GetComponentsInChildren<Button>();
+        KeyCancel = CodeEntry.GetChild(0).GetChild(3).GetComponent<Button>();
+        KeyEnter = CodeEntry.GetChild(0).GetChild(4).GetComponent<Button>();
+        KeyClose = CodeEntry.GetChild(0).GetChild(5).GetComponent<Button>();
+        CodeEntryField = CodeEntry.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>();
 
         if (fullbright != null && fullbright.activeInHierarchy)
         {
@@ -89,25 +101,13 @@ public class DialogueManager : MonoBehaviour
         Audio = Player.GetComponent<AudioController>();
     }
 
-    public void SetDialogue(List<CreateDialogue> dialogues)
-    {
-        Dialogues = dialogues;
-
-        if (Dialogues != null)
-        {
-            foreach (var item in Dialogues)
-            {
-                item.DialogueManager = this;
-            }
-        }
-    }
-
     public void InitializeCanvas()
     {
         DialoguePanel.gameObject.SetActive(false);
         InfoPanel.gameObject.SetActive(false);
         PauseMenu.gameObject.SetActive(false);
         InventoryPanel.gameObject.SetActive(false);
+        CodeEntry.gameObject.SetActive(false);
     }
 
     public void InitializeMainMenu()
@@ -137,15 +137,13 @@ public class DialogueManager : MonoBehaviour
         }
 
         if (dialogueActive && Player != null) {
-            if (Input.GetKeyDown(KeyCode.Z) && typer.completed) {
-                DisableDialogueBox();
-                dialogueActive = false;
+            if (Input.GetKeyUp(KeyCode.Z) && typer.completed) {
+                EnableNextDialogue();
             }
 
             if (timer <= 0) {
                 timer = -1f;
-                DisableDialogueBox();
-                dialogueActive = false;
+                EnableNextDialogue();
             } else {
                 timer -= 1 * Time.unscaledDeltaTime;
             }
@@ -172,10 +170,54 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    public void SetNextDialogue(CreateDialogue nextDialogue)
+    {
+        this.nextDialogue = nextDialogue;
+    }
+
+    public void EnableNextDialogue()
+    {
+        ClearDialogue();
+
+        if (nextDialogue != null && nextDialogue.infoBox)
+        {
+            EnableDialogueBox(nextDialogue.text);
+            if (nextDialogue.nextDialogue != null)
+            {
+                SetNextDialogue(nextDialogue.nextDialogue);
+            }
+            else
+            {
+                nextDialogue = null;
+            }
+        }
+        else if (nextDialogue != null)
+        {
+            EnableDialogueBox(nextDialogue.text, nextDialogue.character);
+            if (nextDialogue.nextDialogue != null)
+            {
+                SetNextDialogue(nextDialogue.nextDialogue);
+            }
+            else
+            {
+                nextDialogue = null;
+            }
+        }
+        else
+        {
+            DisableDialogueBox();
+            dialogueActive = false;
+        }
+    }
+
     public void EnableDialogueBox(string text, Enums.character character)
     {
-        Audio.PlayClip(dialogueOpen, 0.66f);
-        Time.timeScale = 0;
+        if (!DialoguePanel.gameObject.activeInHierarchy)
+        {
+            Audio.PlayClip(dialogueOpen, GetSFXSliderValue());
+            Time.timeScale = 0;
+        }
+
         SetSprite(character);
         DialoguePanel.gameObject.SetActive(true);
         DialogueText.text = text;
@@ -186,8 +228,12 @@ public class DialogueManager : MonoBehaviour
 
     public void EnableDialogueBox(string text)
     {
-        Audio.PlayClip(dialogueOpen, 0.66f);
-        Time.timeScale = 0;
+        if (!InfoPanel.gameObject.activeInHierarchy)
+        {
+            Audio.PlayClip(dialogueOpen, GetSFXSliderValue());
+            Time.timeScale = 0;
+        }
+
         InfoPanel.gameObject.SetActive(true);
         InfoText.text = text;
         typer.TypeWriter(InfoText);
@@ -199,19 +245,23 @@ public class DialogueManager : MonoBehaviour
     {
         typer.Stop();
         if (Audio != null)
-            Audio.PlayClip(dialogueClose, 0.66f);
+            Audio.PlayClip(dialogueClose, GetSFXSliderValue());
 
-        if (InfoPanel.gameObject.activeInHierarchy && InfoPanel != null)
-        {
+        if (InfoPanel.gameObject.activeInHierarchy)
             InfoPanel.gameObject.SetActive(false);
-            Time.timeScale = 1;
-        }
 
-        if (DialoguePanel.gameObject.activeInHierarchy && DialoguePanel != null)
-        {
+        if (DialoguePanel.gameObject.activeInHierarchy)
             DialoguePanel.gameObject.SetActive(false);
-            Time.timeScale = 1;
-        }
+
+        Time.timeScale = 1;
+    }
+
+    private void ClearDialogue()
+    {
+        DialogueText.text = "";
+        InfoText.text = "";
+        DialoguePanel.gameObject.SetActive(false);
+        InfoPanel.gameObject.SetActive(false);
     }
 
     public void UpdateHealthGUI(PlayerController Player)
@@ -293,5 +343,63 @@ public class DialogueManager : MonoBehaviour
     public void ToggleFullbright()
     {
         fullbright.SetActive(!fullbright.activeInHierarchy);
+    }
+
+    public void OpenCodeEntry(Terminal sendingTerminal)
+    {
+        terminal = sendingTerminal;
+        ResetField();
+        CodeEntry.gameObject.SetActive(true);
+        for (int i = 0; i < KeyPadButtons.Length; i++)
+        {
+            string num = KeyPadButtons[i].transform.GetChild(0).GetComponent<Text>().text; 
+            KeyPadButtons[i].onClick.AddListener(() => EnterChar(num));
+        }
+        KeyCancel.onClick.AddListener(ResetField);
+        KeyEnter.onClick.AddListener(() => CheckInput(CodeEntryField.text));
+        KeyClose.onClick.AddListener(CloseCodeEntry);
+        Time.timeScale = 0;
+    }
+
+    public void CloseCodeEntry()
+    {
+        CodeEntry.gameObject.SetActive(false);
+        for (int i = 0; i < KeyPadButtons.Length; i++)
+        {
+            KeyPadButtons[i].onClick.RemoveAllListeners();
+        }
+        KeyCancel.onClick.RemoveAllListeners();
+        KeyEnter.onClick.RemoveAllListeners();
+        KeyClose.onClick.RemoveAllListeners();
+        Time.timeScale = 1;
+    }
+
+    private void EnterChar(string s)
+    {
+        if (CodeEntryField.text.Length < 4)
+        {
+            CodeEntryField.text += s;
+        }
+    }
+
+    public void ResetField()
+    {
+        CodeEntryField.text = "";
+    }
+
+    public void CheckInput(string userInput)
+    {
+        if (terminal.correctCode.Equals(userInput))
+        {
+            terminal.Fire(true);
+            CloseCodeEntry();
+            terminal.Disable();
+            terminal = null;
+
+        }
+        else
+        {
+            ResetField();
+        }
     }
 }

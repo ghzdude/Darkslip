@@ -9,11 +9,13 @@ public class DoorController : MonoBehaviour
     public bool startOpen;
     private Animator anim;
     private AudioSource src;
-    /*public Transform doorSprite;
+    /*
+    public Transform doorSprite;
     public Transform closed;
     public Transform opened;
     private bool opening;
-    private bool closing;*/
+    private bool closing;
+    */
     public float speed = 1;
 
     private void Start()

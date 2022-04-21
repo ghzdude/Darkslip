@@ -12,6 +12,15 @@ EditorBuildSettings:
     path: Assets/Scenes/dockingbay3.unity
     guid: ecf5458b4e012424abafd7d1b1b22dec
   - enabled: 1
+    path: Assets/Scenes/lobby.unity
+    guid: 9d08bd9e49d39db488da0c5919021e26
+  - enabled: 1
+    path: Assets/Scenes/tram.unity
+    guid: 71ec4e39f8f91f74c817ba6017a42790
+  - enabled: 1
+    path: Assets/Scenes/office.unity
+    guid: 28f64dda05f93934b824da2355e5ba5a
+  - enabled: 1
     path: Assets/Scenes/credits.unity
     guid: e8478319b7fc8bf4bac381a819118a4d
   m_configObjects: {}
