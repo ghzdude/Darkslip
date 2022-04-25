@@ -18,6 +18,7 @@ TagManager:
   - Canvas
   - Item Entry
   - Music
+  - Tram
   layers:
   - Default
   - TransparentFX

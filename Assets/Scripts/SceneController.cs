@@ -26,20 +26,16 @@ public class SceneController : MonoBehaviour
         initialized = false;
     }
     // Required Signature (Scene scene, LoadSceneMode mode)
-    private void OnEnable()
-    {
+    private void OnEnable() {
         SceneManager.sceneLoaded += ResetSceneParams;
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         SceneManager.sceneLoaded -= ResetSceneParams;
     }
 
-    private void ResetSceneParams(Scene scene, LoadSceneMode mode)
-    {
-        if (scene.buildIndex > 0 && !initialized)
-        {
+    private void ResetSceneParams(Scene scene, LoadSceneMode mode) {
+        if (scene.buildIndex > 0 && !initialized) {
             DialogueManager.InitializeCanvas();
             DialogueManager.InitializeGameMenu();
             DialogueManager.InitializeHealthObjects();
@@ -47,11 +43,9 @@ public class SceneController : MonoBehaviour
 
             // Search Active Scene
             GameObject[] Objects = scene.GetRootGameObjects();
-            for (int i = 0; i < Objects.Length; i++)
-            {
+            for (int i = 0; i < Objects.Length; i++) {
                 GameObject obj = Objects[i];
-                switch (obj.tag)
-                {
+                switch (obj.tag) {
                     case "Player":
                         Player = obj.transform;
                         SFX = Player.GetComponent<AudioSource>();
@@ -62,8 +56,7 @@ public class SceneController : MonoBehaviour
 
                 if (obj.GetComponent<AudioListener>() != null &&
                     gameObject.GetComponent<AudioListener>() != null &&
-                    !gameObject.Equals(obj))
-                {
+                    !gameObject.Equals(obj)) {
                     Destroy(gameObject.GetComponent<AudioListener>());
                 }
             }
@@ -78,10 +71,9 @@ public class SceneController : MonoBehaviour
         Music = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
 
         DialogueManager.SetCanvasObjects(Canvas);
-        if (scene.name != "credits")
-        {
-            if (Player != null)
-            {
+
+        if (scene.name != "credits") {
+            if (Player != null) {
                 DialogueManager.SetPlayer(Player);
                 // Player.GetComponent<PlayerController>().SceneController = this;
             }
@@ -91,15 +83,19 @@ public class SceneController : MonoBehaviour
             // Deduplicate("SceneController");
         }
 
-        if (scene.buildIndex == 0) // Main Menu Only
-        {
+        // Main Menu Only
+        if (scene.buildIndex == 0) {
             DialogueManager.InitializeMainMenu();
         }
 
-        if (scene.buildIndex == 1) // First Level only
-        {
+        // First Level only
+        if (scene.buildIndex == 1) { 
             InventoryManager.ClearInventory();
-            // DialogueManager.SetDialogue(Dialogue);
+        }
+
+        // Tram Level only
+        if (scene.buildIndex == 3) {
+            // DialogueManager.InitializeTramButtons(FindObjectOfType<Tram>());
         }
     }
 

@@ -23,7 +23,8 @@ public class PlayerController : MonoBehaviour
     private AudioController audioController;
     private NavigationController nav;
     public Enums.direction dir;
-    [HideInInspector] public SceneController SceneController;
+    private SceneController SceneController;
+    private bool active;
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
         nav = gameObject.GetComponent<NavigationController>();
         Camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
         health = maxHealth; // Set Health
+        active = true;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         SceneController = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
         maxHealth = SceneController.GetDialogueManager().GetMaxHearts() * 2;
@@ -41,56 +43,60 @@ public class PlayerController : MonoBehaviour
     
     void FixedUpdate()
     {
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
-        
-        rb.velocity = new Vector2(h * speed, v * speed);
-
-        if (Input.GetKey(KeyCode.Space))
+        if (active)
         {
+            h = Input.GetAxisRaw("Horizontal");
+            v = Input.GetAxisRaw("Vertical");
+
+            rb.velocity = new Vector2(h * speed, v * speed);
+
+            if (Input.GetKey(KeyCode.Space)) {
+                rb.velocity = Vector2.zero;
+            }
+        } else {
             rb.velocity = Vector2.zero;
+            anim.SetTrigger("faceDownImmediately");
+            ResetAnimState();
+            angryTime = 0;
+            CheckAnger();
         }
     }
 
     private void Update()
     {
-        if (CheckHealth())
-            SceneController.ResetScene();
-
-        ResetAnimState();
-        CheckAnger();
-        CheckMovement(rb.velocity.x, rb.velocity.y);
-        Camera.position = new Vector3(transform.position.x, transform.position.y, Camera.position.z);
-
         if (!DialogueManager.dialogueActive) {
             if (Input.GetKeyDown(KeyCode.Z))
                 Interact();
         }
 
-        
+        if (CheckHealth())
+            SceneController.ResetScene();
 
-        if (Input.GetKeyDown(KeyCode.Space) && Time.timeScale > 0)
-        {
-            // anim.SetBool("attack", true);
-            anim.SetTrigger("attack");
-            angryTime = 10;
-            attackCooldown = attackDuration;
-        }
+        Camera.position = new Vector3(transform.position.x, transform.position.y, Camera.position.z);
 
-        if (attackCooldown <= 0)
-        {
-            attackCooldown = 0;
-            if (Input.GetKey(KeyCode.Space) && Time.timeScale > 0)
-            {
+        if (active) {
+            ResetAnimState();
+            CheckAnger();
+            CheckMovement(rb.velocity.x, rb.velocity.y);
+            
+            if (Input.GetKeyDown(KeyCode.Space) && Time.timeScale > 0) {
                 // anim.SetBool("attack", true);
                 anim.SetTrigger("attack");
                 angryTime = 10;
                 attackCooldown = attackDuration;
             }
-        }
-        else
-        {
-            attackCooldown -=  Time.deltaTime;
+
+            if (attackCooldown <= 0) {
+                attackCooldown = 0;
+                if (Input.GetKey(KeyCode.Space) && Time.timeScale > 0) {
+                    // anim.SetBool("attack", true);
+                    anim.SetTrigger("attack");
+                    angryTime = 10;
+                    attackCooldown = attackDuration;
+                }
+            } else {
+                attackCooldown -= Time.deltaTime;
+            }
         }
     }
 
@@ -295,9 +301,9 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("idle", true);
     }
 
-    public void SetVolume(float volume)
+    public void SetActive(bool b)
     {
-        // GetComponent<AudioSource>().volume = SceneController.musicVolume;
-
+        active = b;
+        rb.isKinematic = !b;
     }
 }

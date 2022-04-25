@@ -32,11 +32,14 @@ public class DialogueManager : MonoBehaviour
     private Transform DebugPanel;
     private Transform HealthContainer;
     private Transform CodeEntry;
+    private Transform TramSelector;
     private Text CodeEntryField;
     private Button[] KeyPadButtons;
     private Button KeyCancel;
     private Button KeyEnter;
     private Button KeyClose;
+    private Button btn_lobby;
+    private Button btn_office;
     private Slider sdr_music;
     private Slider sdr_sfx;
     private Text DialogueText;
@@ -61,6 +64,7 @@ public class DialogueManager : MonoBehaviour
         PauseMenu = GameMenu.GetChild(4);
         HealthContainer = GameMenu.GetChild(5);
         CodeEntry = GameMenu.GetChild(6);
+        TramSelector = GameMenu.GetChild(7);
 
         DebugPanel = PauseMenu.GetChild(0);
         DialogueText = DialoguePanel.GetChild(0).GetComponent<Text>();
@@ -74,6 +78,8 @@ public class DialogueManager : MonoBehaviour
         KeyEnter = CodeEntry.GetChild(0).GetChild(4).GetComponent<Button>();
         KeyClose = CodeEntry.GetChild(0).GetChild(5).GetComponent<Button>();
         CodeEntryField = CodeEntry.GetChild(0).GetChild(1).GetChild(0).GetComponent<Text>();
+        btn_lobby = TramSelector.GetChild(2).GetChild(0).GetComponent<Button>();
+        btn_office = TramSelector.GetChild(2).GetChild(1).GetComponent<Button>();
 
         if (fullbright != null && fullbright.activeInHierarchy)
         {
@@ -108,6 +114,7 @@ public class DialogueManager : MonoBehaviour
         PauseMenu.gameObject.SetActive(false);
         InventoryPanel.gameObject.SetActive(false);
         CodeEntry.gameObject.SetActive(false);
+        TramSelector.gameObject.SetActive(false);
     }
 
     public void InitializeMainMenu()
@@ -374,32 +381,51 @@ public class DialogueManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void EnterChar(string s)
-    {
-        if (CodeEntryField.text.Length < 4)
-        {
+    private void EnterChar(string s) {
+        if (CodeEntryField.text.Length < 4) {
             CodeEntryField.text += s;
         }
     }
 
-    public void ResetField()
-    {
+    public void ResetField() {
         CodeEntryField.text = "";
     }
 
-    public void CheckInput(string userInput)
-    {
-        if (terminal.correctCode.Equals(userInput))
-        {
+    public void CheckInput(string userInput) {
+        if (terminal.correctCode.Equals(userInput)) {
             terminal.Fire(true);
             CloseCodeEntry();
             terminal.Disable();
             terminal = null;
 
-        }
-        else
-        {
+        } else {
             ResetField();
         }
+    }
+
+    public void InitializeTramButtons() {
+        Tram tram = GameObject.FindGameObjectWithTag("Tram").GetComponent<Tram>();
+
+        foreach (var dest in tram.Destinations) {
+            if (dest.name.ToLower() == "lobby") {
+                btn_lobby.onClick.AddListener(() => tram.Move(dest));
+            }
+            if (dest.name.ToLower() == "office") {
+                btn_office.onClick.AddListener(() => tram.Move(dest));
+            }
+        }
+    }
+
+    public void OpenTramSelector() {
+        InitializeTramButtons();
+        TramSelector.gameObject.SetActive(true);
+        btn_lobby.onClick.AddListener(CloseTramSelector);
+        btn_office.onClick.AddListener(CloseTramSelector);
+    }
+
+    public void CloseTramSelector() {
+        TramSelector.gameObject.SetActive(false);
+        btn_lobby.onClick.RemoveAllListeners();
+        btn_office.onClick.RemoveAllListeners();
     }
 }
