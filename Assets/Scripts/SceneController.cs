@@ -35,13 +35,18 @@ public class SceneController : MonoBehaviour
     }
 
     private void ResetSceneParams(Scene scene, LoadSceneMode mode) {
-        if (scene.buildIndex > 0 && !initialized) {
-            DialogueManager.InitializeCanvas();
-            DialogueManager.InitializeGameMenu();
-            DialogueManager.InitializeHealthObjects();
-            initialized = true;
 
-            // Search Active Scene
+        // Search Any Scene After Manager
+        if (scene.buildIndex > 0) {
+
+            // First Time Initializing
+            if (!initialized) {
+                DialogueManager.InitializeCanvas();
+                DialogueManager.InitializeGameMenu();
+                DialogueManager.InitializeHealthObjects();
+                initialized = true;
+            }
+
             GameObject[] Objects = scene.GetRootGameObjects();
             for (int i = 0; i < Objects.Length; i++) {
                 GameObject obj = Objects[i];
@@ -60,10 +65,9 @@ public class SceneController : MonoBehaviour
                     Destroy(gameObject.GetComponent<AudioListener>());
                 }
             }
-
             SceneManager.SetActiveScene(scene);
         }
-        
+
         // Search Any Loaded Scene
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         InventoryManager = GameObject.FindGameObjectWithTag("InventoryManager").GetComponent<InventoryManager>();
@@ -75,12 +79,8 @@ public class SceneController : MonoBehaviour
         if (scene.name != "credits") {
             if (Player != null) {
                 DialogueManager.SetPlayer(Player);
-                // Player.GetComponent<PlayerController>().SceneController = this;
             }
             InventoryManager.InventoryPanel = DialogueManager.GetInventoryPanel();
-            // Deduplicate("Canvas");
-            // Deduplicate("DialogueManager");
-            // Deduplicate("SceneController");
         }
 
         // Main Menu Only
@@ -92,11 +92,6 @@ public class SceneController : MonoBehaviour
         if (scene.buildIndex == 1) { 
             InventoryManager.ClearInventory();
         }
-
-        // Tram Level only
-        if (scene.buildIndex == 3) {
-            // DialogueManager.InitializeTramButtons(FindObjectOfType<Tram>());
-        }
     }
 
     public void ResetScene()
@@ -107,6 +102,7 @@ public class SceneController : MonoBehaviour
         {
             SceneManager.UnloadSceneAsync(currentScene);
             SceneManager.LoadScene(currentScene.name, LoadSceneMode.Additive);
+            initialized = false;
         }
         Time.timeScale = 1;
         // print(string.Format("scene: {0} has been reset", currentScene.name));

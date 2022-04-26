@@ -34,17 +34,16 @@ public class PlayerController : MonoBehaviour
         audioController = gameObject.GetComponent<AudioController>();
         nav = gameObject.GetComponent<NavigationController>();
         Camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        health = maxHealth; // Set Health
-        active = true;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         SceneController = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
-        maxHealth = SceneController.GetDialogueManager().GetMaxHearts() * 2;
+        maxHealth = DialogueManager.GetMaxHearts() * 2;
+        health = maxHealth; // Set Health
+        active = true;
+        
     }
     
-    void FixedUpdate()
-    {
-        if (active)
-        {
+    void FixedUpdate() {
+        if (active) {
             h = Input.GetAxisRaw("Horizontal");
             v = Input.GetAxisRaw("Vertical");
 
@@ -231,26 +230,19 @@ public class PlayerController : MonoBehaviour
         health = v;
     }
 
-    private bool CheckHealth()
-    {
-        if (health > maxHealth)
-        {
+    private bool CheckHealth() {
+        if (health > maxHealth) {
             health = maxHealth;
             return false;
-        }
-        else if (health <= 0)
-        {
+        } else if (health <= 0) {
             health = 0;
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    private void ResetAnimState()
-    {
+    private void ResetAnimState() {
         anim.SetBool("movingRight", false);
         anim.SetBool("movingLeft", false);
         anim.SetBool("movingUp", false);

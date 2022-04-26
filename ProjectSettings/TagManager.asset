@@ -65,6 +65,12 @@ TagManager:
   - name: player
     uniqueID: 690662541
     locked: 0
+  - name: lights
+    uniqueID: 3062021159
+    locked: 0
+  - name: overlay
+    uniqueID: 2692680845
+    locked: 0
   - name: UI
     uniqueID: 2964616377
     locked: 0

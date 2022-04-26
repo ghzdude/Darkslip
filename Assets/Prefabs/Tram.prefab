@@ -465,6 +465,36 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.6186213, y: 0.10205078}
   m_EdgeRadius: 0
+--- !u!1 &4979834792865415056
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5800558787131366069}
+  m_Layer: 0
+  m_Name: exit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5800558787131366069
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4979834792865415056}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6614254968838318435}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6614254968838318460
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,6 +531,7 @@ Transform:
   - {fileID: 5689566755813376588}
   - {fileID: 3179775752915790555}
   - {fileID: 1001597102}
+  - {fileID: 5800558787131366069}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -535,7 +566,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a54a7dd2802b57446a14c702d7ada7ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  Destinations: []
+  speed: 6
   margin: 0.01
 --- !u!61 &1875433006
 BoxCollider2D:

@@ -8,14 +8,13 @@ public class Tram : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 starting;
     private Vector2 destination;
-    // private Vector3 departPos;
     [HideInInspector] public List<Transform> Destinations;
     private Transform sitting;
+    private Transform exit;
     private Transform Player;
     private DialogueManager DialogueManager;
+    private Collider2D extraCollider;
     private bool moving;
-    // private bool departing;
-    // private bool hasPlayer;
     public float speed;
     public float margin;
 
@@ -24,20 +23,18 @@ public class Tram : MonoBehaviour
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         gameObject.SetActive(false);
-        // startingPos = transform.GetChild(0).transform.position;
-        // destinationPos = transform.GetChild(1).transform.position;
-        // departPos = transform.GetChild(2).transform.position;
-        sitting = transform.GetChild(4).transform;
+        sitting = transform.GetChild(4);
+        exit = transform.GetChild(5);
         Destinations.AddRange(GameObject.Find("TramPositions").GetComponentsInChildren<Transform>());
         Destinations.RemoveAt(0);
         transform.position = Destinations[0].position;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
-        // transform.position = starting.position;
     }
 
     // Update is called once per frame
     void Update() {
         if (moving) {
+            // on arrival
             if (CalculateVector(transform.position, destination).magnitude <= margin) {
                 transform.position = destination;
                 starting = destination;
@@ -49,6 +46,12 @@ public class Tram : MonoBehaviour
                 if (Player != null) {
                     Player.GetComponent<PlayerController>().SetActive(true);
                     Player.parent = null;
+                    Player.position = exit.position;
+                    Player = null;
+                }
+
+                if (extraCollider != null) {
+                    extraCollider.enabled = false;
                 }
             }
         }
@@ -57,31 +60,16 @@ public class Tram : MonoBehaviour
     public void Move(Transform a, Transform b) {
         starting = a.position;
         destination = b.position;
+        if (b.GetComponent<Collider2D>() != null) {
+            extraCollider = b.GetComponent<Collider2D>();
+        }
         moving = true;
         gameObject.SetActive(true);
-        rb.velocity = CalculateVector(starting, destination).normalized * (speed * Time.deltaTime);
-        // Debug.Log("move from " + a.position + " to " + b.position + " at " + rb.velocity.magnitude);
-        Debug.Log(
-            "vector: " + CalculateVector(starting, destination) +
-            " | normalized: " + CalculateVector(starting, destination).normalized +
-            " | speed * vector: " + CalculateVector(starting, destination) * (speed * Time.deltaTime) +
-            " | velocity: " + rb.velocity.magnitude
-            );
+        rb.velocity = CalculateVector(starting, destination).normalized  * speed;
     }
 
     public void Move(Transform b) {
-        destination = b.position;
-        moving = true;
-        gameObject.SetActive(true);
-        rb.velocity = CalculateVector(starting, destination).normalized * (speed * Time.deltaTime);
-        // Debug.Log("move from " + starting.position + " to " + b.position + " at " + rb.velocity.magnitude);
-        Debug.Log(
-            "vector: " + CalculateVector(starting, destination) + 
-            " | normalized: " + CalculateVector(starting, destination).normalized +
-            " | speed * vector: " + CalculateVector(starting, destination) * (speed * Time.deltaTime) +
-            " | velocity: " + rb.velocity.magnitude
-            );
-        
+        Move(transform, b);
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
@@ -94,9 +82,18 @@ public class Tram : MonoBehaviour
             anim.SetTrigger("close");
             DialogueManager.OpenTramSelector();
         }
+
+        if (extraCollider != null) {
+            extraCollider.enabled = true;
+        }
     }
     private void OnTriggerExit2D(Collider2D collision) {
-        // ChangeSortingLayer("foreground");
+        if (!moving) {
+            ChangeSortingLayer("foreground");
+            if (extraCollider != null) {
+                extraCollider.enabled = false;
+            }
+        }
     }
 
     private void ChangeSortingLayer (string layer)

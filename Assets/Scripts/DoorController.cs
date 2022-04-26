@@ -9,44 +9,42 @@ public class DoorController : MonoBehaviour
     public bool startOpen;
     private Animator anim;
     private AudioSource src;
-    /*
-    public Transform doorSprite;
-    public Transform closed;
-    public Transform opened;
-    private bool opening;
-    private bool closing;
-    */
-    public float speed = 1;
+    [HideInInspector] public bool isOpen;
 
-    private void Start()
-    {
+    private void Start() {
         anim = GetComponent<Animator>();
         src = GetComponent<AudioSource>();
-        if (startOpen)
-        {
+        isOpen = false;
+
+        if (startOpen) {
             anim.SetBool("startOpen", startOpen);
+            isOpen = true;
         }
-    }
-
-    private void Update()
-    {
-
     }
 
     public void OpenDoor()
     {
+        anim.SetBool("startOpen", false);
         anim.SetTrigger("open");
-        src.PlayOneShot(openDoor);
+        if (openDoor != null) {
+            src.PlayOneShot(openDoor);
+        }
+        isOpen = true;
     }
 
     public void CloseDoor()
     {
+        anim.SetBool("startOpen", false);
         anim.SetTrigger("close");
-        src.PlayOneShot(closeDoor);
+        if (closeDoor != null) {
+            src.PlayOneShot(closeDoor);
+        }
+        isOpen = false;
     }
 
     public void ToggleDoor()
     {
+        anim.SetBool("startOpen", false);
         if (anim.GetCurrentAnimatorStateInfo(0).IsName("doorClosed"))
         {
             anim.SetTrigger("open");
@@ -55,5 +53,7 @@ public class DoorController : MonoBehaviour
         {
             anim.SetTrigger("closed");
         }
+
+        isOpen = !isOpen;
     }
 }

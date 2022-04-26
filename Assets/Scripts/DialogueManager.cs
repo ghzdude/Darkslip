@@ -44,7 +44,7 @@ public class DialogueManager : MonoBehaviour
     private Slider sdr_sfx;
     private Text DialogueText;
     private Text InfoText;
-    private AudioController Audio;
+    private AudioSource src;
     private float timer = 0;
     private Terminal terminal;
 
@@ -65,14 +65,15 @@ public class DialogueManager : MonoBehaviour
         HealthContainer = GameMenu.GetChild(5);
         CodeEntry = GameMenu.GetChild(6);
         TramSelector = GameMenu.GetChild(7);
+        DebugPanel = GameMenu.GetChild(8);
 
-        DebugPanel = PauseMenu.GetChild(0);
+        
         DialogueText = DialoguePanel.GetChild(0).GetComponent<Text>();
         InfoText = InfoPanel.GetChild(0).GetComponent<Text>();
         Holder = DialoguePanel.GetChild(1).GetChild(0).GetComponent<Image>();
         Holder.sprite = null;
-        sdr_music = PauseMenu.GetChild(5).GetComponent<Slider>();
-        sdr_sfx = PauseMenu.GetChild(6).GetComponent<Slider>();
+        sdr_music = PauseMenu.GetChild(2).GetComponent<Slider>();
+        sdr_sfx = PauseMenu.GetChild(3).GetComponent<Slider>();
         KeyPadButtons = CodeEntry.GetChild(0).GetChild(2).GetComponentsInChildren<Button>();
         KeyCancel = CodeEntry.GetChild(0).GetChild(3).GetComponent<Button>();
         KeyEnter = CodeEntry.GetChild(0).GetChild(4).GetComponent<Button>();
@@ -104,7 +105,7 @@ public class DialogueManager : MonoBehaviour
     public void SetPlayer(Transform player)
     {
         Player = player;
-        Audio = Player.GetComponent<AudioController>();
+        src = Player.GetComponent<AudioSource>();
     }
 
     public void InitializeCanvas()
@@ -115,6 +116,7 @@ public class DialogueManager : MonoBehaviour
         InventoryPanel.gameObject.SetActive(false);
         CodeEntry.gameObject.SetActive(false);
         TramSelector.gameObject.SetActive(false);
+        DebugPanel.gameObject.SetActive(false);
     }
 
     public void InitializeMainMenu()
@@ -136,6 +138,11 @@ public class DialogueManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) {
             PauseMenu.gameObject.SetActive(!PauseMenu.gameObject.activeInHierarchy);
             InventoryPanel.gameObject.SetActive(!InventoryPanel.gameObject.activeInHierarchy);
+        }
+
+        // LShift + Q + E for debug
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.E)) {
+            DebugPanel.gameObject.SetActive(!DebugPanel.gameObject.activeInHierarchy);
         }
 
         if (DialoguePanel.gameObject.activeInHierarchy || InfoPanel.gameObject.activeInHierarchy)
@@ -186,42 +193,29 @@ public class DialogueManager : MonoBehaviour
     {
         ClearDialogue();
 
-        if (nextDialogue != null && nextDialogue.infoBox)
-        {
+        if (nextDialogue != null && nextDialogue.infoBox) {
             EnableDialogueBox(nextDialogue.text);
-            if (nextDialogue.nextDialogue != null)
-            {
+            if (nextDialogue.nextDialogue != null) {
                 SetNextDialogue(nextDialogue.nextDialogue);
-            }
-            else
-            {
+            } else {
                 nextDialogue = null;
             }
-        }
-        else if (nextDialogue != null)
-        {
+        } else if (nextDialogue != null) {
             EnableDialogueBox(nextDialogue.text, nextDialogue.character);
-            if (nextDialogue.nextDialogue != null)
-            {
+            if (nextDialogue.nextDialogue != null) {
                 SetNextDialogue(nextDialogue.nextDialogue);
-            }
-            else
-            {
+            } else {
                 nextDialogue = null;
             }
-        }
-        else
-        {
+        } else {
             DisableDialogueBox();
             dialogueActive = false;
         }
     }
 
-    public void EnableDialogueBox(string text, Enums.character character)
-    {
-        if (!DialoguePanel.gameObject.activeInHierarchy)
-        {
-            Audio.PlayClip(dialogueOpen, GetSFXSliderValue());
+    public void EnableDialogueBox(string text, Enums.character character) {
+        if (!DialoguePanel.gameObject.activeInHierarchy) {
+            src.PlayOneShot(dialogueOpen, GetSFXSliderValue());
             Time.timeScale = 0;
         }
 
@@ -237,7 +231,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (!InfoPanel.gameObject.activeInHierarchy)
         {
-            Audio.PlayClip(dialogueOpen, GetSFXSliderValue());
+            src.PlayOneShot(dialogueOpen, GetSFXSliderValue());
             Time.timeScale = 0;
         }
 
@@ -251,8 +245,8 @@ public class DialogueManager : MonoBehaviour
     public void DisableDialogueBox()
     {
         typer.Stop();
-        if (Audio != null)
-            Audio.PlayClip(dialogueClose, GetSFXSliderValue());
+        if (src != null)
+            src.PlayOneShot(dialogueClose, GetSFXSliderValue());
 
         if (InfoPanel.gameObject.activeInHierarchy)
             InfoPanel.gameObject.SetActive(false);

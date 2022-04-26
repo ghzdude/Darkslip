@@ -9,19 +9,20 @@ public class LevelTransition : MonoBehaviour
     private Scene manager;
     public string nextScene;
 
-    private void Awake()
-    {
+    private void Awake() {
         manager = SceneManager.GetSceneByBuildIndex(0);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.GetComponent<PlayerController>() != null) {
             currentScene = SceneManager.GetActiveScene();
+            if (currentScene == manager) {
+                Debug.Log("Manager is the active scene, cannot unload!");
+                return;
+            }
             SceneManager.UnloadSceneAsync(currentScene);
             SceneManager.LoadScene(nextScene, LoadSceneMode.Additive);
-            // manager.GetRootGameObjects();
+            Debug.Log("scene unloaded: " + currentScene.name + " | attempting to load: " + nextScene);
         }
     }
 }
