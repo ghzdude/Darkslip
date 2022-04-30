@@ -34,15 +34,14 @@ public class EnemyBehavior : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (health <= 0) // On death
-        {
+    void Update() {
+        if (health <= 0) {
             gameObject.SetActive(false);
         }
 
-        if (CastAggroCircle() && target) // If target is found
-        {
+        
+        if (CastAggroCircle() && target) {
+            // If target is found
             CalculateTargetVector();
             CalculateFacing();
         }
@@ -136,16 +135,16 @@ public class EnemyBehavior : MonoBehaviour
     private void CalculateFacing()
     {
         if (targetVector.x > Mathf.Abs(targetVector.y)) {
-            UpdateAnimationState(true, Enums.direction.Right);
+            UpdateAnimationState(true, Enums.Direction.Right);
             Debug.Log("attack right");
         } else if (targetVector.x < -Mathf.Abs(targetVector.y)) {
-            UpdateAnimationState(true, Enums.direction.Left);
+            UpdateAnimationState(true, Enums.Direction.Left);
             Debug.Log("attack left");
         } else if (targetVector.y > Mathf.Abs(targetVector.x)) {
-            UpdateAnimationState(true, Enums.direction.Up);
+            UpdateAnimationState(true, Enums.Direction.Up);
             Debug.Log("attack up");
         } else if (targetVector.y < -Mathf.Abs(targetVector.x)) {
-            UpdateAnimationState(true, Enums.direction.Down);
+            UpdateAnimationState(true, Enums.Direction.Down);
             Debug.Log("attack down");
         } else {
             ResetAnimationState();
@@ -182,31 +181,31 @@ public class EnemyBehavior : MonoBehaviour
         rb.velocity = Vector2.zero;
     }
 
-    private void UpdateAnimationState(bool moving, Enums.direction dir)
+    private void UpdateAnimationState(bool moving, Enums.Direction dir)
     {
         anim.SetBool("moving", moving);
         anim.SetBool("idle", !moving);
         switch (dir)
         {
-            case Enums.direction.Left:
+            case Enums.Direction.Left:
                 anim.SetBool("up", false);
                 anim.SetBool("down", false);
                 anim.SetBool("left", true);
                 anim.SetBool("right", false);
                 break;
-            case Enums.direction.Right:
+            case Enums.Direction.Right:
                 anim.SetBool("up", false);
                 anim.SetBool("down", false);
                 anim.SetBool("left", false);
                 anim.SetBool("right", true);
                 break;
-            case Enums.direction.Up:
+            case Enums.Direction.Up:
                 anim.SetBool("up", true);
                 anim.SetBool("down", false);
                 anim.SetBool("left", false);
                 anim.SetBool("right", false);
                 break;
-            case Enums.direction.Down:
+            case Enums.Direction.Down:
                 anim.SetBool("up", false);
                 anim.SetBool("down", true);
                 anim.SetBool("left", false);
@@ -228,20 +227,20 @@ public class EnemyBehavior : MonoBehaviour
         anim.SetBool("right", false);
     }
 
-    private void CastDamageBox(Enums.direction dir)
+    private void CastDamageBox(Enums.Direction dir)
     {
         switch (dir)
         {
-            case Enums.direction.Left:
+            case Enums.Direction.Left:
                 hits = Physics2D.BoxCastAll(attackPositions[2].position, Vector2.one /2, 0, Vector2.left);
                 break;
-            case Enums.direction.Right:
+            case Enums.Direction.Right:
                 hits = Physics2D.BoxCastAll(attackPositions[3].position, Vector2.one /2, 0, Vector2.right);
                 break;
-            case Enums.direction.Up:
+            case Enums.Direction.Up:
                 hits = Physics2D.BoxCastAll(attackPositions[0].position, Vector2.one /2, 0, Vector2.up);
                 break;
-            case Enums.direction.Down:
+            case Enums.Direction.Down:
                 hits = Physics2D.BoxCastAll(attackPositions[1].position, Vector2.one /2, 0, Vector2.down);
                 break;
             default:

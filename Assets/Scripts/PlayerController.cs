@@ -20,24 +20,25 @@ public class PlayerController : MonoBehaviour
     public GameObject[] interactPositions;
     private RaycastHit2D[] hits;
     public AudioClip gunShot;
-    private AudioController audioController;
+    private AudioSource src;
     private NavigationController nav;
-    public Enums.direction dir;
+    public Enums.Direction dir;
     private SceneController SceneController;
     private bool active;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         rb = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
-        audioController = gameObject.GetComponent<AudioController>();
+        src = gameObject.GetComponent<AudioSource>();
         nav = gameObject.GetComponent<NavigationController>();
+
         Camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         SceneController = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
         maxHealth = DialogueManager.GetMaxHearts() * 2;
         health = maxHealth; // Set Health
+        DialogueManager.UpdateHealthGUI(this);
         active = true;
         
     }
@@ -99,52 +100,50 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Shoot(Enums.direction dir)
-    {
-        switch (dir)
-        {
-            case Enums.direction.Right:
+    public void Shoot(Enums.Direction dir) {
+        switch (dir) {
+            case Enums.Direction.Right:
                 hits = Physics2D.RaycastAll(castPositions[1].transform.position, Vector2.right, 16f);
                 break;
-            case Enums.direction.Left:
+            case Enums.Direction.Left:
                 hits = Physics2D.RaycastAll(castPositions[0].transform.position, Vector2.left, 16f);
                 break;
-            case Enums.direction.Up:
+            case Enums.Direction.Up:
                 hits = Physics2D.RaycastAll(castPositions[2].transform.position, Vector2.up, 16f);
                 break;
-            case Enums.direction.Down:
+            case Enums.Direction.Down:
                 hits = Physics2D.RaycastAll(castPositions[2].transform.position, Vector2.down, 16f);
                 break;
             default:
                 break;
         }
-        audioController.PlayClip(gunShot, DialogueManager.GetSFXSliderValue());
+        src.PlayOneShot(gunShot, DialogueManager.GetSFXSliderValue());
 
-        if (hits != null && hits.Length > 0)
-        {
-            for (int i = 0; i < hits.Length; i++)
-            {
-                if (hits[i].transform.CompareTag("Wall"))
-                {
+        if (hits != null && hits.Length > 0) {
+            for (int i = 0; i < hits.Length; i++) {
+                if (hits[i].transform.CompareTag("Wall")) {
                     return;
                 }
 
-                if (hits[i].transform.GetComponentInParent<EnemyBehavior>() != null)
-                {
+                if (hits[i].transform.GetComponentInParent<EnemyBehavior>() != null) {
                     hits[i].collider.GetComponentInParent<EnemyBehavior>().DecHealth();
                     return;
                 }
 
-                if (hits[i].collider.GetComponent<HealthManager>() != null)
-                {
-                    hits[i].transform.GetComponent<HealthManager>().DecHealth(1, audioController);
+                if (hits[i].collider.GetComponent<HealthManager>() != null) {
+                    hits[i].transform.GetComponent<HealthManager>().DecHealth(1, src);
                     return;
                 }
+                /*
+                if (hits[i].collider.GetComponent<CreateDialogue>() != null) {
+                    hits[i].collider.GetComponent<CreateDialogue>().EnableDialogueBox();
+                    return;
+                }*/
             }
         }
     }
 
-    public void SetDirection(Enums.direction dir)
+    public void SetDirection(Enums.Direction dir)
     {
         this.dir = dir;
     }
@@ -158,16 +157,16 @@ public class PlayerController : MonoBehaviour
     {
         switch (dir)
         {
-            case Enums.direction.Right:
+            case Enums.Direction.Right:
                 hits = Physics2D.BoxCastAll(interactPositions[1].transform.position, Vector2.one, 0f, Vector2.zero);
                 break;
-            case Enums.direction.Left:
+            case Enums.Direction.Left:
                 hits = Physics2D.BoxCastAll(interactPositions[0].transform.position, Vector2.one, 0f, Vector2.zero);
                 break;
-            case Enums.direction.Up:
+            case Enums.Direction.Up:
                 hits = Physics2D.BoxCastAll(interactPositions[3].transform.position, Vector2.one, 0f, Vector2.zero);
                 break;
-            case Enums.direction.Down:
+            case Enums.Direction.Down:
                 hits = Physics2D.BoxCastAll(interactPositions[2].transform.position, Vector2.one, 0f, Vector2.zero);
                 break;
             default:
@@ -178,57 +177,48 @@ public class PlayerController : MonoBehaviour
             for (int i = 0; i < hits.Length; i++)
             {
                 GameObject hit = hits[i].transform.gameObject;
-                if (hit.GetComponent<Terminal>() != null)
-                {
-                    // audioController.PlayClip(hits[i].transform.GetComponent<Terminal>().activate, 0.66f);
+                if (hit.GetComponent<Terminal>() != null) {
                     hit.GetComponent<Terminal>().Fire();
                     return;
                 }
 
-                if (hit.GetComponent<Collectable>()  != null)
-                {
+                if (hit.GetComponent<Collectable>()  != null) {
                     hit.GetComponent<Collectable>().Fire();
                     SceneController.GetInventoryManager().AddItem(hit.GetComponent<Collectable>());
                     return;
                 }
 
-                if (hit.GetComponent<CreateDialogue>() != null)
-                {
+                if (hit.GetComponent<CreateDialogue>() != null) {
                     hit.GetComponent<CreateDialogue>().EnableDialogueBox();
                 }
             }
         }
     }
 
-    public void DecHealth(int amount)
-    {
+    // Decrement Health by Amount
+    public void DecHealth(int amount) {
         health -= amount;
-    } // Decrement Health by Amount
+        DialogueManager.UpdateHealthGUI(this);
+    }
 
-    public void DecHealth()
-    {
-        health--;
-    } // Decrement Health by 1
+    // Decrement Health by 1
+    public void DecHealth() {
+        DecHealth(1);
+    }
 
-    public void IncHealth(int amount)
-    {
+    // Increment Health by Amount
+    public void IncHealth(int amount) {
         health += amount;
-    } // Increment Health by Amount
-
-    public void IncHealth()
-    {
-        health++;
-    } // Increment Health by 1
-
-    public int GetHealth()
-    {
-        return health;
+        DialogueManager.UpdateHealthGUI(this);
+    }
+    // Increment Health by 1
+    public void IncHealth() {
+        IncHealth(1);
     }
 
-    public void SetHealth(int v)
-    {
-        health = v;
-    }
+    public int GetHealth() => health;
+
+    public void SetHealth(int v) => health = v;
 
     private bool CheckHealth() {
         if (health > maxHealth) {

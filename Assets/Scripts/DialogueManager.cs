@@ -6,13 +6,15 @@ using UnityEngine.UI;
 public class DialogueManager : MonoBehaviour
 {
 
-    [TextArea(10, 10)]
-    public string text;
+    private string text;
     private TypeWriterFX typer;
+    [Header("Dialogue Sounds")]
     public AudioClip dialogueOpen;
     public AudioClip dialogueClose;
+    [Header("Character")]
     public Sprite seanSprite;
     public Sprite doctorSprite;
+    public RuntimeAnimatorController staticSprite;
     public GameObject fullbright;
     public Sprite[] HeartIcons; // 0 is heartFull, 1 is heartHalf, 2 is heartEmpty
     public GameObject Heart;
@@ -33,6 +35,8 @@ public class DialogueManager : MonoBehaviour
     private Transform HealthContainer;
     private Transform CodeEntry;
     private Transform TramSelector;
+    [Header("Canvas Objects")]
+    public Transform Credits;
     private Text CodeEntryField;
     private Button[] KeyPadButtons;
     private Button KeyCancel;
@@ -117,18 +121,27 @@ public class DialogueManager : MonoBehaviour
         CodeEntry.gameObject.SetActive(false);
         TramSelector.gameObject.SetActive(false);
         DebugPanel.gameObject.SetActive(false);
+        Credits.gameObject.SetActive(false);
     }
 
     public void InitializeMainMenu()
     {
         MainMenu.gameObject.SetActive(true);
         GameMenu.gameObject.SetActive(false);
+        Credits.gameObject.SetActive(false);
     }
 
     public void InitializeGameMenu()
     {
         GameMenu.gameObject.SetActive(true);
         MainMenu.gameObject.SetActive(false);
+        Credits.gameObject.SetActive(false);
+    }
+
+    public void InitializeCredits() {
+        GameMenu.gameObject.SetActive(false);
+        MainMenu.gameObject.SetActive(false);
+        Credits.gameObject.SetActive(true);
     }
 
     public RectTransform GetInventoryPanel() => InventoryPanel.GetComponent<RectTransform>();
@@ -140,43 +153,44 @@ public class DialogueManager : MonoBehaviour
             InventoryPanel.gameObject.SetActive(!InventoryPanel.gameObject.activeInHierarchy);
         }
 
+        if (DialoguePanel.gameObject.activeInHierarchy || InfoPanel.gameObject.activeInHierarchy) {
+            dialogueActive = true;
+        }
+
         // LShift + Q + E for debug
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.E)) {
             DebugPanel.gameObject.SetActive(!DebugPanel.gameObject.activeInHierarchy);
         }
-
-        if (DialoguePanel.gameObject.activeInHierarchy || InfoPanel.gameObject.activeInHierarchy)
-        {
-            dialogueActive = true;
-        }
-
         if (dialogueActive && Player != null) {
             if (Input.GetKeyUp(KeyCode.Z) && typer.completed) {
                 EnableNextDialogue();
             }
-
-            if (timer <= 0) {
-                timer = -1f;
+            
+            if (timer <= 0f) {
                 EnableNextDialogue();
             } else {
                 timer -= 1 * Time.unscaledDeltaTime;
             }
         }
-
-        if (Player != null)
-            UpdateHealthGUI(Player.GetComponent<PlayerController>());
-        
     }
 
-    public void SetSprite(Enums.character character)
+    public void SetSprite(Enums.Character character)
     {
+        Animator anim = Holder.GetComponent<Animator>();
+        anim.runtimeAnimatorController = null;
+        anim.enabled = false;
+
         switch (character)
         {
-            case Enums.character.Sean:
+            case Enums.Character.Sean:
                 Holder.sprite = seanSprite;
                 break;
-            case Enums.character.Doctor:
+            case Enums.Character.Doctor:
                 Holder.sprite = doctorSprite;
+                break;
+            case Enums.Character.Static:
+                anim.runtimeAnimatorController = staticSprite;
+                anim.enabled = true;
                 break;
             default:
                 Debug.Log("Error reading character in GetSprite()");
@@ -184,13 +198,9 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void SetNextDialogue(CreateDialogue nextDialogue)
-    {
-        this.nextDialogue = nextDialogue;
-    }
+    public void SetNextDialogue(CreateDialogue nextDialogue) => this.nextDialogue = nextDialogue;
 
-    public void EnableNextDialogue()
-    {
+    public void EnableNextDialogue() {
         ClearDialogue();
 
         if (nextDialogue != null && nextDialogue.infoBox) {
@@ -209,42 +219,40 @@ public class DialogueManager : MonoBehaviour
             }
         } else {
             DisableDialogueBox();
-            dialogueActive = false;
         }
     }
 
-    public void EnableDialogueBox(string text, Enums.character character) {
+    private void InitializeDialogue(Text text) {
+        src.PlayOneShot(dialogueOpen, GetSFXSliderValue());
+        Time.timeScale = 0;
+        typer.TypeWriter(text, Player.GetComponent<AudioSource>());
+        timer = 10f;
+        dialogueActive = true;
+    }
+
+    public void EnableDialogueBox(string text, Enums.Character character) {
         if (!DialoguePanel.gameObject.activeInHierarchy) {
-            src.PlayOneShot(dialogueOpen, GetSFXSliderValue());
-            Time.timeScale = 0;
+            DialogueText.text = text;
+            InitializeDialogue(DialogueText);
+            SetSprite(character);
+            DialoguePanel.gameObject.SetActive(true);
+            
         }
-
-        SetSprite(character);
-        DialoguePanel.gameObject.SetActive(true);
-        DialogueText.text = text;
-        typer.TypeWriter(DialogueText);
-        timer = 10f;
-        dialogueActive = true;
     }
 
-    public void EnableDialogueBox(string text)
-    {
-        if (!InfoPanel.gameObject.activeInHierarchy)
-        {
-            src.PlayOneShot(dialogueOpen, GetSFXSliderValue());
-            Time.timeScale = 0;
+    public void EnableDialogueBox(string text) {
+        if (!InfoPanel.gameObject.activeInHierarchy) {
+            InfoText.text = text;
+            InitializeDialogue(InfoText);
+            InfoPanel.gameObject.SetActive(true);
         }
-
-        InfoPanel.gameObject.SetActive(true);
-        InfoText.text = text;
-        typer.TypeWriter(InfoText);
-        timer = 10f;
-        dialogueActive = true;
     }
 
-    public void DisableDialogueBox()
-    {
+    public void DisableDialogueBox() {
         typer.Stop();
+        dialogueActive = false;
+        timer = -1f;
+
         if (src != null)
             src.PlayOneShot(dialogueClose, GetSFXSliderValue());
 
@@ -257,16 +265,14 @@ public class DialogueManager : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void ClearDialogue()
-    {
+    private void ClearDialogue() {
         DialogueText.text = "";
         InfoText.text = "";
         DialoguePanel.gameObject.SetActive(false);
         InfoPanel.gameObject.SetActive(false);
     }
 
-    public void UpdateHealthGUI(PlayerController Player)
-    {
+    public void UpdateHealthGUI(PlayerController Player) {
         int health = Player.GetHealth();
         // DebugPanel.GetComponentInChildren<Text>().text = string.Format("Health: {0}", health);
         int index = Mathf.CeilToInt((float)health / 2) - 1;
@@ -277,40 +283,30 @@ public class DialogueManager : MonoBehaviour
         // health is 2, 1; index is 0; even should have 1 full heart, 2 empty; odd should have 0 full hearts, 2 empty
         // health is 0; index is -1?; should have 3 empty
         // even full hearts index + 1; even empty is 2 - index
-        for (int i = 0; i < Hearts.Count; i++)
-        {
-            if (health % 2 == 1 && health > 0) // odd > 0
-            {
-                if (i < index)
-                {
+        for (int i = 0; i < Hearts.Count; i++) {
+            if (health % 2 == 1 && health > 0) { // odd > 0 
+                if (i < index) {
                     Hearts[i].GetComponent<Image>().sprite = HeartIcons[0]; // set full
                 }
-                if (i == index)
-                {
+                if (i == index) {
                     Hearts[index].GetComponent<Image>().sprite = HeartIcons[1]; // set half heart
                 }
-                if (index < i)
-                {
+                if (index < i) {
                     Hearts[i].GetComponent<Image>().sprite = HeartIcons[2]; // set empty
                 }
             }
-            if (health % 2 == 0 && health > 0) // even > 0
-            {
-                if (i <= index)
-                {
+            if (health % 2 == 0 && health > 0) { // even > 0
+                if (i <= index) {
                     Hearts[i].GetComponent<Image>().sprite = HeartIcons[0]; // set full
                 }
-                if (index < i)
-                {
+                if (index < i) {
                     Hearts[i].GetComponent<Image>().sprite = HeartIcons[2]; // set empty
                 }
             }
         }
 
-        if (health <= 0) // if health is less than zero
-        {
-            for (int i = 0; i < Hearts.Count; i++)
-            {
+        if (health <= 0) { // if health is less than zero
+            for (int i = 0; i < Hearts.Count; i++) {
                 Hearts[i].GetComponent<Image>().sprite = HeartIcons[2]; // set empty
             }
         }

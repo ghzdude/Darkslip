@@ -8,44 +8,65 @@ public class TypeWriterFX : MonoBehaviour
     private string stored;
     private char[] startTxt;
     public float revealSpeed;
-    private int index;
+    public AudioClip typeSound;
+    private AudioSource src;
+    private int waitIndex;
     [HideInInspector] public bool completed;
+    private DialogueManager DialogueManager;
+    private bool running;
 
+    private void Awake() {
+        DialogueManager = GetComponent<DialogueManager>();
+    }
 
-    public void TypeWriter(Text txt)
-    {
+    public void TypeWriter(Text txt, AudioSource src) {
+        this.src = src;
         completed = false;
         ClearText();
         // txt = gameObject.GetComponent<Text>();
         stored = txt.text;
-        startTxt = new char[txt.text.Length];
+        startTxt = new char[stored.Length];
         txt.text = "";
-        StartCoroutine(StartType(txt));
+        if (!running) {
+            StartCoroutine(StartType(txt));
+        }
     }
 
-    public void ClearText()
-    {
-        index = 0;
+    public void ClearText() {
+        // index = 0;
         stored = "";
         startTxt = new char[0];
     }
 
-    public void Stop()
-    {
+    public void Stop() {
         StopCoroutine("StartType");
+        running = false;
     }
 
-    IEnumerator StartType(Text txt)
-    {
-        while (txt.text.Length < stored.Length)
-        {
-
+    IEnumerator StartType(Text txt) {
+        running = true;
+        for (int i = 0; i < stored.Length; i++) {
+            if (stored[i] == '\\' ) {
+                waitIndex = int.Parse(stored[i + 1].ToString() + stored[i + 2].ToString());
+                i += 2;
+                for (int j = 0; j < waitIndex; j++) {
+                    yield return new WaitForSecondsRealtime(revealSpeed / 100);
+                }
+                continue;
+            }
+            src.PlayOneShot(typeSound, 0.05f);
+            txt.text += stored[i];
+            yield return new WaitForSecondsRealtime(revealSpeed / 100);
+        }
+        /*
+        while (txt.text.Length < stored.Length) {
             startTxt[index] = stored[index];
             txt.text += startTxt[index];
             index++;
-            yield return new WaitForSecondsRealtime(revealSpeed/100);
-        }
+            yield return new WaitForSecondsRealtime(revealSpeed / 100);
+        }*/
         completed = true;
+        running = false;
         yield return null;
     }
 }

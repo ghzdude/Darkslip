@@ -8,7 +8,7 @@ public class MovementBehavior : MonoBehaviour
     public bool translate;
     public bool rotate;
     public bool clockwise;
-    public Enums.direction dir;
+    public Enums.Direction dir;
     // Update is called once per frame
     void Update()
     {
@@ -16,16 +16,16 @@ public class MovementBehavior : MonoBehaviour
         {
             switch (dir)
             {
-                case Enums.direction.Left:
+                case Enums.Direction.Left:
                     transform.position += Vector3.left * speed * Time.deltaTime;
                     break;
-                case Enums.direction.Right:
+                case Enums.Direction.Right:
                     transform.position += Vector3.right * speed * Time.deltaTime;
                     break;
-                case Enums.direction.Up:
+                case Enums.Direction.Up:
                     transform.position += Vector3.up * speed * Time.deltaTime;
                     break;
-                case Enums.direction.Down:
+                case Enums.Direction.Down:
                     transform.position += Vector3.down * speed * Time.deltaTime;
                     break;
                 default:

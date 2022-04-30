@@ -1,66 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class NavigationController : MonoBehaviour
 {
     public Transform pointer;
-    public List<Transform> markers;
+    private Transform target;
 
 
     // Start is called before the first frame update
 
-    private void Start()
-    {
-        if (markers != null)
-        {
-            SetMarkerIndex(0);
-        }
-        else
-        {
-            pointer.gameObject.SetActive(false);
-        }
-    }
-
-    private void OnEnable()
-    {
-        SceneManager.sceneLoaded += ResetMarkers;
-    }
-
-    private void OnDisable()
-    {
-        SceneManager.sceneLoaded -= ResetMarkers;
-    }
-
-    private void ResetMarkers(Scene scene, LoadSceneMode mode)
-    {
-        if (markers != null)
-        {
-            SetMarkerIndex(0);
-        }
-        else
-        {
+    private void Start() {
+        if (target == null) {
             pointer.gameObject.SetActive(false);
         }
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         // Why isn't LookAt2D a thing???
         // rotates arrow to face current objective
-        if (markers != null && markers.Count > 0)
+        if (target != null)
         {
             if (!pointer.gameObject.activeInHierarchy)
                 pointer.gameObject.SetActive(true);
 
-            pointer.localEulerAngles = LookAt2D(markers[GetMarkerIndex].position);
+            pointer.localEulerAngles = LookAt2D(target.position);
         }
     }
 
-    public void SetMarkerIndex(int i) => GetMarkerIndex = i;
-    public int GetMarkerIndex { get; private set; }
+    // public void SetMarkerIndex(int i) => GetMarkerIndex = i;
+    // public int GetMarkerIndex { get; private set; }
 
     public Vector3 LookAt2D(Vector3 pos)
     {
@@ -70,7 +40,7 @@ public class NavigationController : MonoBehaviour
         // Debug.Log(string.Format("Pointer should face {0}, {1} at {2} degrees", pos.x, pos.y, target.z));
         return target;
     }
-
+    /*
     public void AddMarker(Transform marker)
     {
         markers.Add(marker);
@@ -84,5 +54,10 @@ public class NavigationController : MonoBehaviour
             SetMarkerIndex(markers.Count - 2);
         else
             SetMarkerIndex(0);
+    }*/
+
+    public void SetTarget (Transform target) {
+        this.target = target;
+        gameObject.SetActive(true);
     }
 }

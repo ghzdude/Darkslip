@@ -12,12 +12,12 @@ public class InventoryManager : MonoBehaviour
     public GameObject listEntry;
     public float verticalOffset;
     private int count = 1;
-    private DialogueManager dialogueManager;
+    private DialogueManager DialogueManager;
     private string format;
 
     private void Start()
     {
-        dialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
     }
 
     public void ClearInventory()
@@ -69,9 +69,8 @@ public class InventoryManager : MonoBehaviour
             entries[j].GetComponent<RectTransform>().anchoredPosition = new Vector2(
                 entries[j].GetComponent<RectTransform>().anchoredPosition.x, 
                 entries[j].GetComponent<RectTransform>().anchoredPosition.y - (verticalOffset * j));
-
+            
             entries[j].transform.GetChild(2).GetComponent<Button>().onClick.AddListener(() => RetrieveDialouge(j, itemList[j].characterResponse));
-            // Debug.Log(string.Format("{0} has been added at the item slot {1} with the amount of {2}", itemList[j].name, j, itemListCount[j]));
         }
     }
 
@@ -80,11 +79,10 @@ public class InventoryManager : MonoBehaviour
         itemList.Remove(item);
     }
 
-    public void RetrieveDialouge (int index, bool character)
-    {
-        if (!dialogueManager.dialogueActive && character)
-            dialogueManager.EnableDialogueBox(itemList[index].TextOnPickup, Enums.character.Sean);
-        else
-            dialogueManager.EnableDialogueBox(itemList[index].TextOnPickup);
+    public void RetrieveDialouge (int index, bool character) {
+        if (!DialogueManager.dialogueActive && character)
+            DialogueManager.EnableDialogueBox(itemList[index].TextOnPickup, Enums.Character.Sean);
+        else if (!DialogueManager.dialogueActive)
+            DialogueManager.EnableDialogueBox(itemList[index].TextOnPickup);
     }
 }

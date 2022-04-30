@@ -4,59 +4,42 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
-    public int health;
+    private int health;
+    public int maxHealth;
     public AudioClip destroyed;
     public AudioClip hit;
     public Sprite[] damagedSprites;
     private SpriteRenderer sprite;
-    public int markerIndex;
-    public bool allowMarkerIndex;
+    private DialogueManager DialogueManager;
+    public Transform nextMarker;
+    public bool allowNextMarker;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         sprite = gameObject.GetComponent<SpriteRenderer>();
+        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+        health = maxHealth;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void DecHealth(int hit, AudioController audio)
-    {
+    public void DecHealth(int hit, AudioSource src) {
         health -= hit;
-        switch (health)
-        {
-            case 3:
-                sprite.sprite = damagedSprites[0];
-                break;
-            case 2:
-                sprite.sprite = damagedSprites[1];
-                break;
-            case 1:
-                sprite.sprite = damagedSprites[2];
-                break;
-            case 0:
-                audio.PlayClip(destroyed, 0.66f);
-                gameObject.SetActive(false);
-                if (allowMarkerIndex)
-                {
-                    audio.GetComponent<NavigationController>().SetMarkerIndex(markerIndex);
-                    foreach (var item in GameObject.FindGameObjectsWithTag("Destructible"))
-                    {
-                        if (item.GetComponent<HealthManager>().markerIndex == markerIndex)
-                        {
-                            item.GetComponent<HealthManager>().allowMarkerIndex = false;
-                        }
-                    }
-                }
-                break;
-            default:
-                break;
+
+        if (health <= 0) { // On Death
+            src.PlayOneShot(destroyed, DialogueManager.GetSFXSliderValue());
+            gameObject.SetActive(false);
+
+            if (allowNextMarker) {
+                src.GetComponent<NavigationController>().SetTarget(nextMarker);
+            }
+            return;
+        } else { // Still Alive
+            sprite.sprite = damagedSprites[health - 1];
+            src.PlayOneShot(this.hit, DialogueManager.GetSFXSliderValue());
         }
-        audio.PlayClip(this.hit, 0.66f);
-        
+    }
+
+    private int CalculateDamagedState() {
+        float healthRatio = health / maxHealth;
+        return Mathf.RoundToInt(healthRatio * damagedSprites.Length - 1);
     }
 }

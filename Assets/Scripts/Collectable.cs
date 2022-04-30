@@ -7,6 +7,7 @@ public class Collectable : MonoBehaviour
     [TextArea(10,10)] public string TextOnPickup;
     private DialogueManager DialogueManager;
     private Transform Player;
+    private MarkerTrigger MarkerTrigger;
     public bool characterResponse;
     public bool shouldDisable;
     public GameObject glowingSprite;
@@ -17,29 +18,30 @@ public class Collectable : MonoBehaviour
         icon = GetComponent<SpriteRenderer>().sprite;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         Player = GameObject.FindGameObjectWithTag("Player").transform;
+        MarkerTrigger = GetComponent<MarkerTrigger>();
 
         if (transform.Find(glowingSprite.name) == null)
             Instantiate(glowingSprite, transform).transform.localPosition = Vector3.zero;
     }
 
-    public void Fire()
-    {
-        if (!DialogueManager.dialogueActive && Player != null)
-        {
+    public void Fire() {
+        if (!DialogueManager.dialogueActive && Player != null) {
             if (!characterResponse)
                 DialogueManager.EnableDialogueBox(TextOnPickup);
             else
-                DialogueManager.EnableDialogueBox(TextOnPickup, Enums.character.Sean);
+                DialogueManager.EnableDialogueBox(TextOnPickup, Enums.Character.Sean);
+
+            if (MarkerTrigger != null) {
+                MarkerTrigger.GenericTrigger(Player.GetComponent<NavigationController>());
+            }
 
             transform.SetParent(Player.GetChild(0));
-        }
-        else
-        {
+
+        } else {
             Debug.Log("Player transform is null, collectable not parented to player inventory!");
         }
 
-        if (shouldDisable)
-        {
+        if (shouldDisable) {
             gameObject.SetActive(false);
         }
     }

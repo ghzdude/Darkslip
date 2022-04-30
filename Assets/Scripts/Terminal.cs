@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class Terminal : MonoBehaviour
 {
@@ -10,81 +9,61 @@ public class Terminal : MonoBehaviour
     private AudioSource src;
     private DialogueManager DialogueManager;
     private Transform Player;
-    public int markerIndex;
-    public bool allowMarkerIndex;
+    public Transform nextMarker;
+    public bool allowNextMarker;
     public bool quitGame;
     public bool requiresCode;
     public string correctCode;
     private bool active;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         src = gameObject.GetComponent<AudioSource>();
         Player = GameObject.FindGameObjectWithTag("Player").transform;
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         active = true;
     }
 
-    public void Fire()
-    {
-        if (active)
-        {
+    public void Fire() {
+        if (active) {
             // Debug.Log("Fire");
             src.PlayOneShot(activate, DialogueManager.GetSFXSliderValue());
 
-            if (requiresCode)
+            if (requiresCode) {
                 DialogueManager.OpenCodeEntry(this);
-            else
-            {
-                if (target.GetComponent<DoorController>() != null)
-                {
+            } else {
+                if (target.GetComponent<DoorController>() != null) {
                     target.GetComponent<DoorController>().OpenDoor();
-                    return;
-                }
-
-            }
-
-            if (quitGame)
-            {
-                GameObject.FindGameObjectWithTag("SceneController ").GetComponent<SceneController>().QuitGame();
-            }
-
-            // Debug.Log("Nothing Happened, Check Your Tags.");
-
-
-            if (allowMarkerIndex)
-                Player.GetComponent<NavigationController>().SetMarkerIndex(markerIndex);
-            allowMarkerIndex = false;
-        }
-    }
-
-    public void Fire (bool succeed)
-    {
-        if (active)
-        {
-            if (succeed)
-            {
-                if (target.GetComponent<DoorController>() != null)
-                {
-                    target.GetComponent<DoorController>().OpenDoor();
+                    if (allowNextMarker)
+                        Player.GetComponent<NavigationController>().SetTarget(nextMarker);
+                    allowNextMarker = false;
                     return;
                 }
             }
 
-            if (allowMarkerIndex)
-                Player.GetComponent<NavigationController>().SetMarkerIndex(markerIndex);
-            allowMarkerIndex = false;
+            if (quitGame) {
+                GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>().QuitGame();
+            }
         }
     }
 
-    public void Disable()
-    {
+    public void Fire (bool succeed) {
+        if (active && succeed) {
+            if (target.GetComponent<DoorController>() != null) {
+                target.GetComponent<DoorController>().OpenDoor();
+                if (allowNextMarker)
+                    Player.GetComponent<NavigationController>().SetTarget(nextMarker);
+                allowNextMarker = false;
+                return;
+            }
+        }
+    }
+
+    public void Disable() {
         active = false;
     }
 
-    public void Enable()
-    {
+    public void Enable() {
         active = true;
     }
 }

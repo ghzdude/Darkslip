@@ -8,7 +8,7 @@ public class CreateDialogue : MonoBehaviour
     [TextArea(10, 10)] public string text;
     public bool infoBox = true;
     public bool shouldDisable = true;
-    public Enums.character character;
+    public Enums.Character character;
     private DialogueManager DialogueManager;
     public CreateDialogue nextDialogue;
 
@@ -17,23 +17,19 @@ public class CreateDialogue : MonoBehaviour
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
+    private void OnTriggerEnter2D(Collider2D collision){
         EnableDialogueBox();
     }
 
-    public void EnableDialogueBox()
-    {
-        if (!DialogueManager.dialogueActive)
-        {
+    public void EnableDialogueBox() {
+        if (!DialogueManager.dialogueActive) {
             if (infoBox)
                 DialogueManager.EnableDialogueBox(text);
             else
                 DialogueManager.EnableDialogueBox(text, character);
         }
 
-        if (nextDialogue != null)
-        {
+        if (nextDialogue != null) {
             DialogueManager.SetNextDialogue(nextDialogue);
         }
 
