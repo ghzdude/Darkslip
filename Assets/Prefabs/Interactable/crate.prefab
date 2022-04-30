@@ -71,15 +71,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c4d188d7a2cda541b39390288ab1bfa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 4
+  maxHealth: 4
   destroyed: {fileID: 8300000, guid: 49a9e036877e1b04a9aefe776666cdaa, type: 3}
   hit: {fileID: 8300000, guid: c46acad445fd04c43937d80f966f8c3c, type: 3}
   damagedSprites:
-  - {fileID: 4444980147945960928, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
-  - {fileID: -2069660456029034469, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
   - {fileID: -5843391103799036864, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
-  markerIndex: 0
-  allowMarkerIndex: 0
+  - {fileID: -2069660456029034469, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
+  - {fileID: 4444980147945960928, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
+  nextMarker: {fileID: 0}
+  allowNextMarker: 0
 --- !u!212 &6604399416556193318
 SpriteRenderer:
   m_ObjectHideFlags: 0
