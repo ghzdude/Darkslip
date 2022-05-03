@@ -161,8 +161,8 @@ public class DialogueManager : MonoBehaviour
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.E)) {
             DebugPanel.gameObject.SetActive(!DebugPanel.gameObject.activeInHierarchy);
         }
-        if (dialogueActive && Player != null) {
-            if (Input.GetKeyUp(KeyCode.Z) && typer.completed) {
+        if (dialogueActive && typer.completed && Player != null) {
+            if (Input.GetKeyUp(KeyCode.Z)) {
                 EnableNextDialogue();
             }
             
@@ -174,8 +174,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void SetSprite(Enums.Character character)
-    {
+    public void SetSprite(Enums.Character character) {
         Animator anim = Holder.GetComponent<Animator>();
         anim.runtimeAnimatorController = null;
         anim.enabled = false;

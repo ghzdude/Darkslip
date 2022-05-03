@@ -10,14 +10,12 @@ public class HealthManager : MonoBehaviour
     public AudioClip hit;
     public Sprite[] damagedSprites;
     private SpriteRenderer sprite;
-    private DialogueManager DialogueManager;
     public Transform nextMarker;
     public bool allowNextMarker;
 
     // Start is called before the first frame update
     void Start() {
         sprite = gameObject.GetComponent<SpriteRenderer>();
-        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         health = maxHealth;
     }
 
@@ -25,16 +23,18 @@ public class HealthManager : MonoBehaviour
         health -= hit;
 
         if (health <= 0) { // On Death
-            src.PlayOneShot(destroyed, DialogueManager.GetSFXSliderValue());
+            src.PlayOneShot(destroyed, Managers.GetDialogueManager().GetSFXSliderValue());
             gameObject.SetActive(false);
-
+            if (GetComponent<CreateEnemy>() != null) {
+                GetComponent<CreateEnemy>().InstantiateEnemy();
+            }
             if (allowNextMarker) {
                 src.GetComponent<NavigationController>().SetTarget(nextMarker);
             }
             return;
         } else { // Still Alive
             sprite.sprite = damagedSprites[health - 1];
-            src.PlayOneShot(this.hit, DialogueManager.GetSFXSliderValue());
+            src.PlayOneShot(this.hit, Managers.GetDialogueManager().GetSFXSliderValue());
         }
     }
 

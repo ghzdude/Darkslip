@@ -285,7 +285,7 @@ GameObject:
   - component: {fileID: 7175314168517366435}
   m_Layer: 5
   m_Name: Item Entry
-  m_TagString: Item Entry
+  m_TagString: ItemEntry
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

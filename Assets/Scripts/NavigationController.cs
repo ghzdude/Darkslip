@@ -32,8 +32,7 @@ public class NavigationController : MonoBehaviour
     // public void SetMarkerIndex(int i) => GetMarkerIndex = i;
     // public int GetMarkerIndex { get; private set; }
 
-    public Vector3 LookAt2D(Vector3 pos)
-    {
+    public Vector3 LookAt2D(Vector3 pos) {
         Vector3 target = new Vector3(pos.x - pointer.position.x, pos.y - pointer.position.y);
         float rotation = Mathf.Atan2(target.y, target.x) * Mathf.Rad2Deg;
         target = new Vector3(0f, 0f, rotation - 90f);

@@ -12,13 +12,14 @@ public class CreateDialogue : MonoBehaviour
     private DialogueManager DialogueManager;
     public CreateDialogue nextDialogue;
 
-    private void Awake()
-    {
-        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+    private void Awake() {
+        DialogueManager = Managers.GetDialogueManager();
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
-        EnableDialogueBox();
+        if (collision != null && collision.GetComponent<PlayerController>() != null) {
+            EnableDialogueBox();
+        }
     }
 
     public void EnableDialogueBox() {

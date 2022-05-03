@@ -5,7 +5,6 @@ public class Collectable : MonoBehaviour
 {
     public string internalName;
     [TextArea(10,10)] public string TextOnPickup;
-    private DialogueManager DialogueManager;
     private Transform Player;
     private MarkerTrigger MarkerTrigger;
     public bool characterResponse;
@@ -13,10 +12,8 @@ public class Collectable : MonoBehaviour
     public GameObject glowingSprite;
     [HideInInspector] public Sprite icon;
 
-    private void Start()
-    {
+    private void Start() {
         icon = GetComponent<SpriteRenderer>().sprite;
-        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
         Player = GameObject.FindGameObjectWithTag("Player").transform;
         MarkerTrigger = GetComponent<MarkerTrigger>();
 
@@ -25,20 +22,23 @@ public class Collectable : MonoBehaviour
     }
 
     public void Fire() {
-        if (!DialogueManager.dialogueActive && Player != null) {
+        if (!Managers.GetDialogueManager().dialogueActive && Player != null) {
             if (!characterResponse)
-                DialogueManager.EnableDialogueBox(TextOnPickup);
+                Managers.GetDialogueManager().EnableDialogueBox(TextOnPickup);
             else
-                DialogueManager.EnableDialogueBox(TextOnPickup, Enums.Character.Sean);
+                Managers.GetDialogueManager().EnableDialogueBox(TextOnPickup, Enums.Character.Sean);
 
             if (MarkerTrigger != null) {
                 MarkerTrigger.GenericTrigger(Player.GetComponent<NavigationController>());
             }
-
             transform.SetParent(Player.GetChild(0));
 
         } else {
             Debug.Log("Player transform is null, collectable not parented to player inventory!");
+        }
+
+        if (GetComponent<DoorTrigger>() != null) {
+            GetComponent<DoorTrigger>().TriggerDoor();
         }
 
         if (shouldDisable) {

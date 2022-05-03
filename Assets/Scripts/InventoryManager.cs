@@ -15,41 +15,33 @@ public class InventoryManager : MonoBehaviour
     private DialogueManager DialogueManager;
     private string format;
 
-    private void Start()
-    {
+    private void Start() {
         DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
     }
 
-    public void ClearInventory()
-    {
+    public void ClearInventory() {
         // Set Variables
         itemList = new List<Collectable>();
         itemListCount = new List<int>();
         entries = new List<GameObject>();
-        for (int i = 0; i < InventoryPanel.GetComponentsInChildren<RectTransform>().Length; i++)
-        {
+        for (int i = 0; i < InventoryPanel.GetComponentsInChildren<RectTransform>().Length; i++) {
             RectTransform entry = InventoryPanel.GetComponentsInChildren<RectTransform>()[i];
-            if (entry.CompareTag("Item Entry"))
-            {
+            if (entry.CompareTag(Tags.ItemEntry)) {
                 Destroy(entry.gameObject);
             }
         }
     }
 
-    public void AddItem(Collectable item)
-    {
+    public void AddItem(Collectable item) {
         format = "{0}x {1}";
         // Check if itemList is not null and has something
-        if (itemList != null && itemListCount != null && entries != null)
-        {
+        if (itemList != null && itemListCount != null && entries != null) {
             // Debug.Log("item list, count, and entries exists");
 
             // Check if item exists
             // itemList.Exists(x => item.internalName == Enums.inventoryType.Clipboard);
-            for (int i = 0; i < itemList.Count; i++)
-            {
-                if (itemList[i].internalName == item.internalName)
-                {
+            for (int i = 0; i < itemList.Count; i++) {
+                if (itemList[i].internalName == item.internalName) {
                     // Debug.Log("matching item detected");
                     itemListCount[i]++;
                     InventoryPanel.GetChild(i).GetComponentInChildren<Text>().text = string.Format(format, itemListCount[i], item.internalName);
@@ -57,7 +49,6 @@ public class InventoryManager : MonoBehaviour
                     // Debug.Log(string.Format("{0} has been added at the item slot {1} with the amount of {2}", itemList[i].name, i, itemListCount[i]));
                     return;
                 }
-
             }
             count = 1;
             itemList.Add(item);
@@ -74,9 +65,11 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void RemoveItem(Collectable item)
-    {
+    public void RemoveItem(Collectable item) {
+        int index = itemList.IndexOf(item);
         itemList.Remove(item);
+        itemListCount.RemoveAt(index);
+        entries.RemoveAt(index);
     }
 
     public void RetrieveDialouge (int index, bool character) {

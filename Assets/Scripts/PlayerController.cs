@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
             default:
                 break;
         }
-        src.PlayOneShot(gunShot, DialogueManager.GetSFXSliderValue());
+        src.PlayOneShot(gunShot, Managers.GetDialogueManager().GetSFXSliderValue() * 1.1f);
 
         if (hits != null && hits.Length > 0) {
             for (int i = 0; i < hits.Length; i++) {
@@ -130,7 +130,7 @@ public class PlayerController : MonoBehaviour
                     return;
                 }
 
-                if (hits[i].collider.GetComponent<HealthManager>() != null) {
+                if (hits[i].transform.CompareTag(Tags.Destructible)) {
                     hits[i].transform.GetComponent<HealthManager>().DecHealth(1, src);
                     return;
                 }

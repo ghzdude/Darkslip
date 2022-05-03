@@ -7,13 +7,14 @@ public class TypeWriterFX : MonoBehaviour
 {
     private string stored;
     private char[] startTxt;
+    [Tooltip("Reveal Speed / 100")]
     public float revealSpeed;
     public AudioClip typeSound;
     private AudioSource src;
     private int waitIndex;
     [HideInInspector] public bool completed;
     private DialogueManager DialogueManager;
-    private bool running;
+    public bool running;
 
     private void Awake() {
         DialogueManager = GetComponent<DialogueManager>();
@@ -54,7 +55,9 @@ public class TypeWriterFX : MonoBehaviour
                 }
                 continue;
             }
-            src.PlayOneShot(typeSound, 0.05f);
+            if (stored[i] != ' ') {
+                src.PlayOneShot(typeSound, Managers.GetDialogueManager().GetSFXSliderValue() / 2);
+            }
             txt.text += stored[i];
             yield return new WaitForSecondsRealtime(revealSpeed / 100);
         }

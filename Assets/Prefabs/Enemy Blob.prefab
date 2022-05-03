@@ -207,7 +207,7 @@ Transform:
   m_GameObject: {fileID: 6924160007552375323}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.58, y: 3.47, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1}
   m_Children:
   - {fileID: 6924160007469101154}
   - {fileID: 6924160006917390315}
@@ -254,8 +254,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 690662541
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: -1245259994578027518, guid: 6a72c7f578986c746ba762d074188676, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -288,8 +288,12 @@ MonoBehaviour:
   - {fileID: 6924160006766621546}
   aggroRange: 10
   attackRange: 1.5
-  speed: 2
-  knockback: 24
+  speed: 4
+  knockback: 12
+  dazedTimer: 0.5
+  hurt: {fileID: 8300000, guid: cea66483b84ec374a8284d7bec5da17c, type: 3}
+  death: {fileID: 8300000, guid: cebbab21168da384695fe3edef37743f, type: 3}
+  attack: {fileID: 8300000, guid: 8d61521705871ed44a2ed7b9ad628ec6, type: 3}
 --- !u!95 &6924160007552375320
 Animator:
   serializedVersion: 3

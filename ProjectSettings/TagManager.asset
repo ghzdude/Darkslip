@@ -16,7 +16,6 @@ TagManager:
   - ItemEntry
   - DialogueManager
   - Canvas
-  - Item Entry
   - Music
   - Tram
   layers:

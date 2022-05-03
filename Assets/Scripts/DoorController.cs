@@ -26,31 +26,27 @@ public class DoorController : MonoBehaviour
             anim.SetBool("startOpen", startOpen);
             isOpen = true;
         }
-
         doorLockedRef.SetActive(locked);
     }
 
     public void OpenDoor() {
-        doorLockedRef.SetActive(false);
         anim.SetBool("startOpen", false);
         anim.SetTrigger("open");
-        OnMoving();
-
+        // OnMoving();
         isOpen = true;
     }
 
     public void CloseDoor() {
         anim.SetBool("startOpen", false);
         anim.SetTrigger("close");
-        OnMoving();
-
+        // OnMoving();
         isOpen = false;
     }
 
     public void ToggleDoor() {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("doorClosed")) {
+        if (!isOpen) {
             OpenDoor();
-        } else if (anim.GetCurrentAnimatorStateInfo(0).IsName("doorOpened")) {
+        } else if (isOpen) {
             CloseDoor();
         }
 
@@ -66,7 +62,8 @@ public class DoorController : MonoBehaviour
     }
 
     public void OnMoving() {
-        if (doorMoving != null) {
+        if (doorMoving != null && Time.timeScale >= 1) {
+            doorLockedRef.SetActive(false);
             src.clip = doorMoving;
             src.Play();
         }
