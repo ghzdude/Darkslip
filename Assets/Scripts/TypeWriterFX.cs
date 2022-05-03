@@ -56,7 +56,7 @@ public class TypeWriterFX : MonoBehaviour
                 continue;
             }
             if (stored[i] != ' ') {
-                src.PlayOneShot(typeSound, Managers.GetDialogueManager().GetSFXSliderValue() / 2);
+                src.PlayOneShot(typeSound, Managers.GetDialogueManager().GetSFXSliderValue() / 3);
             }
             txt.text += stored[i];
             yield return new WaitForSecondsRealtime(revealSpeed / 100);

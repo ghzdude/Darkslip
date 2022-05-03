@@ -92,13 +92,10 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void InitializeHealthObjects()
-    {
-        if (HealthContainer.childCount == 0)
-        {
+    public void InitializeHealthObjects() {
+        if (HealthContainer.childCount == 0) {
             Hearts = new List<RectTransform>();
-            for (int i = 0; i<maxHearts; i++)
-            {
+            for (int i = 0; i<maxHearts; i++) {
                 Hearts.Add(Instantiate(Heart, HealthContainer).GetComponent<RectTransform>());
                 Hearts[i].anchoredPosition = new Vector2(Hearts[i].anchoredPosition.x + (horizontalOffset* i), Hearts[i].anchoredPosition.y);
 }
@@ -179,8 +176,7 @@ public class DialogueManager : MonoBehaviour
         anim.runtimeAnimatorController = null;
         anim.enabled = false;
 
-        switch (character)
-        {
+        switch (character) {
             case Enums.Character.Sean:
                 Holder.sprite = seanSprite;
                 break;
