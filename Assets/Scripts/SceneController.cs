@@ -41,7 +41,7 @@ public class SceneController : MonoBehaviour
     private void ResetSceneParams(Scene scene, LoadSceneMode mode) {
 
         // Search Any Scene After Manager
-        if (scene.buildIndex > 0 && scene.name != "credits") {
+        if (scene.buildIndex > 0) {
 
             // First Time Initializing
             if (!initialized) {
