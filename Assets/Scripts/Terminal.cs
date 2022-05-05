@@ -8,7 +8,6 @@ public class Terminal : MonoBehaviour
     public AudioClip activate;
     private AudioSource src;
     public Transform nextMarker;
-    public bool allowNextMarker;
     public bool quitGame;
     public bool requiresCode;
     public string correctCode;
@@ -22,7 +21,6 @@ public class Terminal : MonoBehaviour
 
     public void Fire() {
         if (active) {
-            // Debug.Log("Fire");
             src.PlayOneShot(activate, Managers.GetDialogueManager().GetSFXSliderValue());
 
             if (requiresCode) {
@@ -31,7 +29,7 @@ public class Terminal : MonoBehaviour
                 if (target.GetComponent<DoorController>() != null) {
                     target.GetComponent<DoorController>().OpenDoor();
                     SetMarker();
-                    Debug.Log("open door");
+                    CheckDialogue();
                     return;
                 }
             }
@@ -44,9 +42,12 @@ public class Terminal : MonoBehaviour
 
     public void Fire (bool succeed) {
         if (active && succeed) {
+            src.PlayOneShot(activate, Managers.GetDialogueManager().GetSFXSliderValue());
+
             if (target.GetComponent<DoorController>() != null) {
                 target.GetComponent<DoorController>().OpenDoor();
                 SetMarker();
+                CheckDialogue();
                 return;
             }
         }
@@ -61,8 +62,13 @@ public class Terminal : MonoBehaviour
     }
 
     private void SetMarker() {
-        if (allowNextMarker)
+        if (nextMarker != null)
             Managers.GetPlayerController().GetComponent<NavigationController>().SetTarget(nextMarker);
-        allowNextMarker = false;
+    }
+
+    private void CheckDialogue() {
+        if (GetComponent<CreateDialogue>() != null) {
+            GetComponent<CreateDialogue>().EnableDialogueBox();
+        }
     }
 }

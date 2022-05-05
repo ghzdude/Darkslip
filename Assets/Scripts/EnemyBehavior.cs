@@ -210,18 +210,19 @@ public class EnemyBehavior : MonoBehaviour {
     }
 
     private void CastDamageBox(Enums.Direction dir) {
+        float scalar = 2.5f;
         switch (dir) {
             case Enums.Direction.Left:
-                hits = Physics2D.BoxCastAll(attackPositions[2].position, Vector2.one / 3, 0, Vector2.zero);
+                hits = Physics2D.BoxCastAll(attackPositions[2].position, Vector2.one / scalar, 0, Vector2.zero);
                 break;
             case Enums.Direction.Right:
-                hits = Physics2D.BoxCastAll(attackPositions[3].position, Vector2.one / 3, 0, Vector2.zero);
+                hits = Physics2D.BoxCastAll(attackPositions[3].position, Vector2.one / scalar, 0, Vector2.zero);
                 break;
             case Enums.Direction.Up:
-                hits = Physics2D.BoxCastAll(attackPositions[0].position, Vector2.one / 3, 0, Vector2.zero);
+                hits = Physics2D.BoxCastAll(attackPositions[0].position, Vector2.one / scalar, 0, Vector2.zero);
                 break;
             case Enums.Direction.Down:
-                hits = Physics2D.BoxCastAll(attackPositions[1].position, Vector2.one / 3, 0, Vector2.zero);
+                hits = Physics2D.BoxCastAll(attackPositions[1].position, Vector2.one / scalar, 0, Vector2.zero);
                 break;
             default:
                 break;

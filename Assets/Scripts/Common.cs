@@ -10,15 +10,17 @@ public static class Enums {
 }
 
 public static class Managers {
-    public static readonly string DialogueManager = "DialogueManager";
-    public static readonly string SceneManager = "SceneController";
-    public static readonly string InventoryManager = "InventoryManager";
-    public static readonly string Player = "Player";
+    private static readonly string DialogueManager = "DialogueManager";
+    private static readonly string SceneManager = "SceneController";
+    private static readonly string InventoryManager = "InventoryManager";
+    private static readonly string Player = "Player";
+    private static readonly string Camera = "MainCamera";
 
     public static DialogueManager GetDialogueManager() => GameObject.FindGameObjectWithTag(DialogueManager).GetComponent<DialogueManager>();
     public static SceneController GetSceneController() => GameObject.FindGameObjectWithTag(SceneManager).GetComponent<SceneController>();
     public static InventoryManager GetInventoryManager() => GameObject.FindGameObjectWithTag(InventoryManager).GetComponent<InventoryManager>();
     public static PlayerController GetPlayerController() => GameObject.FindGameObjectWithTag(Player).GetComponent<PlayerController>();
+    public static Transform GetCamera() => GameObject.FindGameObjectWithTag(Camera).transform;
 }
 
 public static class Scenes {
@@ -55,4 +57,9 @@ public static class Tags {
     public static readonly string Canvas = "Canvas";
     public static readonly string Music = "Music";
     public static readonly string Tram = "Tram";
+    public static readonly string DialogueManager = "DialogueManager";
+    public static readonly string SceneManager = "SceneController";
+    public static readonly string InventoryManager = "InventoryManager";
+    public static readonly string Player = "Player";
+    public static readonly string Camera = "MainCamera";
 }

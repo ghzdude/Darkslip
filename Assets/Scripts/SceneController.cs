@@ -10,7 +10,7 @@ public class SceneController : MonoBehaviour
     private Transform Player;
     private InventoryManager InventoryManager;
     private MusicManager MusicManager;
-    private Vector3 offset;
+    private Vector3 plrOldPosition;
     private AudioSource Music;
     private AudioSource SFX;
     private bool initialized;
@@ -39,10 +39,15 @@ public class SceneController : MonoBehaviour
     }
 
     private void ResetSceneParams(Scene scene, LoadSceneMode mode) {
+        bool hasAudioListener = false;
 
         // Search Any Scene After Manager
         if (scene.buildIndex > 0) {
 
+            if (Player != null && initialized) {
+                Player.position = plrOldPosition;
+            }
+            
             // First Time Initializing
             if (!initialized) {
                 DialogueManager.InitializeCanvas();
@@ -62,14 +67,17 @@ public class SceneController : MonoBehaviour
                     default:
                         break;
                 }
-
-                if (obj.GetComponent<AudioListener>() != null &&
-                    gameObject.GetComponent<AudioListener>() != null &&
-                    !gameObject.Equals(obj)) {
-                    Destroy(gameObject.GetComponent<AudioListener>());
+                
+                if (obj.GetComponent<AudioListener>() != null) {
+                    hasAudioListener = true;
                 }
             }
-            Player.position += offset;
+
+            if (hasAudioListener) {
+                Destroy(gameObject.GetComponent<AudioListener>());
+            } else if (gameObject.GetComponent<AudioListener>() == null) {
+                gameObject.AddComponent<AudioListener>();
+            }
         }
         SceneManager.SetActiveScene(scene);
 
@@ -90,6 +98,7 @@ public class SceneController : MonoBehaviour
         } else if (scene.buildIndex == SceneManager.sceneCountInBuildSettings - 1) {
             MusicManager.SetMusic(Enums.Music.Credits);
             DialogueManager.InitializeCredits();
+            Managers.GetCamera().position = Vector3.zero;
         }
 
         // Main Menu Only
@@ -103,20 +112,14 @@ public class SceneController : MonoBehaviour
             InventoryManager.ClearInventory();
             MusicManager.SetMusic(Enums.Music.DockingBay3);
         }
-
-        if (scene.buildIndex == SceneManager.sceneCountInBuildSettings - 1) {
-
-        }
     }
 
     public void ResetScene() {
         // InventoryManager.ClearInventory();
         Scene currentScene = SceneManager.GetActiveScene();
-        if (currentScene.buildIndex > 0)
-        {
+        if (currentScene.buildIndex > 0) {
             SceneManager.UnloadSceneAsync(currentScene);
             SceneManager.LoadScene(currentScene.name, LoadSceneMode.Additive);
-            initialized = false;
         }
         Time.timeScale = 1;
         // print(string.Format("scene: {0} has been reset", currentScene.name));
@@ -150,6 +153,6 @@ public class SceneController : MonoBehaviour
     public DialogueManager GetDialogueManager() => DialogueManager;
 
     public void SetOffset(Vector3 offset) {
-        this.offset = offset;
+        this.plrOldPosition = offset;
     }
 }

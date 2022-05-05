@@ -221,7 +221,7 @@ public class DialogueManager : MonoBehaviour
         src.PlayOneShot(dialogueOpen, GetSFXSliderValue());
         Time.timeScale = 0;
         typer.TypeWriter(text, Player.GetComponent<AudioSource>());
-        timer = 10f;
+        timer = 10;
         dialogueActive = true;
     }
 
@@ -309,61 +309,47 @@ public class DialogueManager : MonoBehaviour
         
     }
 
-    public void TestHealth(bool shouldDamage)
-    {
+    public void TestHealth(bool shouldDamage) {
         if (shouldDamage)
             Player.GetComponent<PlayerController>().DecHealth();
         else
             Player.GetComponent<PlayerController>().IncHealth();
     }
 
-    public int GetMaxHearts()
-    {
-        return maxHearts;
-    }
+    public int GetMaxHearts() => maxHearts;
 
-    public float GetMusicSliderValue()
-    {
-        return sdr_music.normalizedValue;
-    }
+    public float GetMusicSliderValue() => sdr_music.normalizedValue;
+    
+    public float GetSFXSliderValue() => sdr_sfx.normalizedValue;
 
-    public float GetSFXSliderValue()
-    {
-        return sdr_sfx.normalizedValue;
-    }
+    public void ToggleFullbright() => fullbright.SetActive(!fullbright.activeInHierarchy);
 
-    public void ToggleFullbright()
-    {
-        fullbright.SetActive(!fullbright.activeInHierarchy);
-    }
-
-    public void OpenCodeEntry(Terminal sendingTerminal)
-    {
+    public void OpenCodeEntry(Terminal sendingTerminal) {
         terminal = sendingTerminal;
         ResetField();
         CodeEntry.gameObject.SetActive(true);
-        for (int i = 0; i < KeyPadButtons.Length; i++)
-        {
+        for (int i = 0; i < KeyPadButtons.Length; i++) {
             string num = KeyPadButtons[i].transform.GetChild(0).GetComponent<Text>().text; 
             KeyPadButtons[i].onClick.AddListener(() => EnterChar(num));
         }
+
         KeyCancel.onClick.AddListener(ResetField);
         KeyEnter.onClick.AddListener(() => CheckInput(CodeEntryField.text));
         KeyClose.onClick.AddListener(CloseCodeEntry);
         Time.timeScale = 0;
     }
 
-    public void CloseCodeEntry()
-    {
+    public void CloseCodeEntry() {
         CodeEntry.gameObject.SetActive(false);
-        for (int i = 0; i < KeyPadButtons.Length; i++)
-        {
+        for (int i = 0; i < KeyPadButtons.Length; i++) {
             KeyPadButtons[i].onClick.RemoveAllListeners();
         }
         KeyCancel.onClick.RemoveAllListeners();
         KeyEnter.onClick.RemoveAllListeners();
         KeyClose.onClick.RemoveAllListeners();
-        Time.timeScale = 1;
+        if (terminal.GetComponent<CreateDialogue>() == null) {
+            Time.timeScale = 1;
+        }
     }
 
     private void EnterChar(string s) {
