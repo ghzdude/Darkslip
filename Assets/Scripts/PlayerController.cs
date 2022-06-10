@@ -158,10 +158,10 @@ public class PlayerController : MonoBehaviour
         switch (dir)
         {
             case Enums.Direction.Right:
-                hits = Physics2D.BoxCastAll(interactPositions[1].transform.position, Vector2.one, 0f, Vector2.zero);
+                hits = Physics2D.BoxCastAll(interactPositions[1].transform.position, new Vector2(1, 2), 0f, Vector2.zero);
                 break;
             case Enums.Direction.Left:
-                hits = Physics2D.BoxCastAll(interactPositions[0].transform.position, Vector2.one, 0f, Vector2.zero);
+                hits = Physics2D.BoxCastAll(interactPositions[0].transform.position, new Vector2(1, 2), 0f, Vector2.zero);
                 break;
             case Enums.Direction.Up:
                 hits = Physics2D.BoxCastAll(interactPositions[3].transform.position, Vector2.one, 0f, Vector2.zero);
