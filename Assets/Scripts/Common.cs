@@ -32,6 +32,7 @@ public static class Scenes {
     public static readonly string Labs = "labs";
     public static readonly string DeepLabs = "deeplabs";
     public static readonly string Darkslip = "darkslip";
+    public static readonly string Credits = "credits";
 }
 
 public static class VectorMath {

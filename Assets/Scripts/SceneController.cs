@@ -95,7 +95,7 @@ public class SceneController : MonoBehaviour
                 DialogueManager.SetPlayer(Player);
             }
             InventoryManager.InventoryPanel = DialogueManager.GetInventoryPanel();
-        } else if (scene.buildIndex == SceneManager.sceneCountInBuildSettings - 1) {
+        } else if (scene.name == Scenes.Credits) {
             MusicManager.SetMusic(Enums.Music.Credits);
             DialogueManager.InitializeCredits();
             Managers.GetCamera().position = Vector3.zero;
