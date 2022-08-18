@@ -15,6 +15,18 @@ public class CreateDialogue : MonoBehaviour
         DialogueManager = Managers.GetDialogueManager();
     }
 
+    private void OnDrawGizmos() {
+        Collider2D col = GetComponent<Collider2D>();
+
+        if (col == null) {
+            return;
+        }
+        Bounds bounds = col.bounds;
+
+        Gizmos.color = new Color(0,1,0);
+        Gizmos.DrawWireCube(bounds.center, bounds.size);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision){
         if (collision != null && collision.GetComponent<PlayerController>() != null) {
             EnableDialogueBox();

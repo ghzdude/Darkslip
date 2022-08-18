@@ -64,3 +64,28 @@ public static class Tags {
     public static readonly string Player = "Player";
     public static readonly string Camera = "MainCamera";
 }
+
+public class SeanAnimationStates {
+    public static readonly string IdleDown = "seanIdleDown";
+    public static readonly string IdleUp = "seanIdleUp";
+    public static readonly string IdleRight = "seanIdleRight";
+    public static readonly string IdleLeft = "seanIdleLeft";
+
+    public static readonly string WalkDown = "seanWalkDown";
+    public static readonly string WalkUp = "seanWalkUp";
+    public static readonly string WalkRight = "seanWalkRight";
+    public static readonly string WalkLeft = "seanWalkLeft";
+
+    public static readonly string AttackDown = "seanAttackDown";
+    public static readonly string AttackUp = "seanAttackUp";
+    public static readonly string AttackRight = "seanAttackRight";
+    public static readonly string AttackLeft = "seanAttackLeft";
+
+    public static readonly string IdleDownAttack = "seanIdleDownAttack";
+    public static readonly string IdleRightAttack = "seanIdleRightAttack";
+    public static readonly string IdleLeftAttack = "seanIdleLeftAttack";
+
+    public static readonly string WalkDownAttack = "seanWalkDownAttack";
+    public static readonly string WalkRightAttack = "seanWalkRightAttack";
+    public static readonly string WalkLeftAttack = "seanWalkLeftAttack";
+}

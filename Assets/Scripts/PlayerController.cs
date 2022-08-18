@@ -10,15 +10,14 @@ public class PlayerController : MonoBehaviour
     private float angryTime;
     public float attackDuration; // Time between shots when holding down 'SPACE'
     private float attackCooldown;
-    private float h;
-    private float v;
+    private bool attacking;
+    private Vector2 controlVector;
     private int health;
     private DialogueManager DialogueManager;
     [HideInInspector] public int maxHealth;
     private Transform Camera;
     public GameObject[] castPositions;
     public GameObject[] interactPositions;
-    private RaycastHit2D[] hits;
     public AudioClip gunShot;
     private AudioSource src;
     private NavigationController nav;
@@ -45,20 +44,22 @@ public class PlayerController : MonoBehaviour
     
     void FixedUpdate() {
         if (active) {
-            h = Input.GetAxisRaw("Horizontal");
-            v = Input.GetAxisRaw("Vertical");
+            controlVector = new Vector2(
+                Input.GetAxisRaw("Horizontal"), 
+                Input.GetAxisRaw("Vertical") );
 
-            rb.velocity = new Vector2(h * speed, v * speed);
+            rb.velocity = controlVector * speed;
 
-            if (Input.GetKey(KeyCode.Space)) {
+            if (attacking || Input.GetKey(KeyCode.Space))
                 rb.velocity = Vector2.zero;
-            }
+            
         } else {
             rb.velocity = Vector2.zero;
-            anim.SetTrigger("faceDownImmediately");
-            ResetAnimState();
+            // anim.SetTrigger("faceDownImmediately");
+            anim.Play(SeanAnimationStates.IdleDown);
+            // ResetAnimState();
             angryTime = 0;
-            CheckAnger();
+            // CheckAnger();
         }
     }
 
@@ -74,23 +75,27 @@ public class PlayerController : MonoBehaviour
 
         Camera.position = new Vector3(transform.position.x, transform.position.y, Camera.position.z);
 
-        if (active) {
-            ResetAnimState();
+        if (active && Time.timeScale > 0) {
+            // ResetAnimState();
             CheckAnger();
-            CheckMovement(rb.velocity.x, rb.velocity.y);
+
+            if (!attacking)
+                CheckMovement(rb.velocity.x, rb.velocity.y);
             
-            if (Input.GetKeyDown(KeyCode.Space) && Time.timeScale > 0) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
                 // anim.SetBool("attack", true);
-                anim.SetTrigger("attack");
+                // anim.SetTrigger("attack");
+                Attack();
                 angryTime = 10;
                 attackCooldown = attackDuration;
             }
 
             if (attackCooldown <= 0) {
                 attackCooldown = 0;
-                if (Input.GetKey(KeyCode.Space) && Time.timeScale > 0) {
+                if (Input.GetKey(KeyCode.Space)) {
                     // anim.SetBool("attack", true);
-                    anim.SetTrigger("attack");
+                    // anim.SetTrigger("attack");
+                    Attack();
                     angryTime = 10;
                     attackCooldown = attackDuration;
                 }
@@ -100,7 +105,30 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Shoot(Enums.Direction dir) {
+    private void Attack() {
+        attacking = true;
+        
+        switch (dir) {
+            case Enums.Direction.Left:
+                anim.Play(SeanAnimationStates.AttackLeft);
+                break;
+            case Enums.Direction.Right:
+                anim.Play(SeanAnimationStates.AttackRight);
+                break;
+            case Enums.Direction.Up:
+                anim.Play(SeanAnimationStates.AttackUp);
+                break;
+            case Enums.Direction.Down:
+                anim.Play(SeanAnimationStates.AttackDown);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void Shoot() {
+        RaycastHit2D[] hits;
+
         switch (dir) {
             case Enums.Direction.Right:
                 hits = Physics2D.RaycastAll(castPositions[1].transform.position, Vector2.right, 16f);
@@ -115,8 +143,10 @@ public class PlayerController : MonoBehaviour
                 hits = Physics2D.RaycastAll(castPositions[2].transform.position, Vector2.down, 16f);
                 break;
             default:
+                hits = null;
                 break;
         }
+
         src.PlayOneShot(gunShot, Managers.GetDialogueManager().GetSFXSliderValue() * 1.1f);
 
         if (hits != null && hits.Length > 0) {
@@ -143,20 +173,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void SetDirection(Enums.Direction dir)
-    {
+
+    public void SetDirection(Enums.Direction dir) {
         this.dir = dir;
     }
 
-    public void ResetDuration()
-    {
+    public void ResetDuration() {
         attackDuration = 0;
     }
 
-    public void Interact()
-    {
-        switch (dir)
-        {
+    public void Interact() {
+        RaycastHit2D[] hits;
+
+        switch (dir) {
             case Enums.Direction.Right:
                 hits = Physics2D.BoxCastAll(interactPositions[1].transform.position, new Vector2(1, 2), 0f, Vector2.zero);
                 break;
@@ -170,6 +199,7 @@ public class PlayerController : MonoBehaviour
                 hits = Physics2D.BoxCastAll(interactPositions[2].transform.position, Vector2.one, 0f, Vector2.zero);
                 break;
             default:
+                hits = null;
                 break;
         }
 
@@ -211,6 +241,7 @@ public class PlayerController : MonoBehaviour
         health += amount;
         DialogueManager.UpdateHealthGUI(this);
     }
+    
     // Increment Health by 1
     public void IncHealth() {
         IncHealth(1);
@@ -231,56 +262,117 @@ public class PlayerController : MonoBehaviour
             return false;
         }
     }
-
+    /*
     private void ResetAnimState() {
         anim.SetBool("movingRight", false);
         anim.SetBool("movingLeft", false);
         anim.SetBool("movingUp", false);
         anim.SetBool("movingDown", false);
         anim.SetBool("idle", true);
-    }
+    }*/
 
-    private void CheckAnger()
-    {
+    private void CheckAnger() {
         if (angryTime > 0)
-        {
             angryTime -= Time.deltaTime;
-            anim.SetBool("angry", true);
-        }
-        else if (angryTime <= 0)
-        {
+            // anim.SetBool("angry", true);
+        else 
             angryTime = 0;
-            anim.SetBool("angry", false);
-        }
+            // anim.SetBool("angry", false);
+        
     }
 
-    private void CheckMovement(float x, float y)
-    {
-        if (x > 0)
-        {
-            anim.SetBool("movingRight", true);
-            anim.SetBool("movingLeft", false);
-        }
-        else if (x < 0)
-        {
-            anim.SetBool("movingRight", false);
-            anim.SetBool("movingLeft", true);
-        }
-        if (y > 0)
-        {
-            anim.SetBool("movingUp", true);
-            anim.SetBool("movingDown", false);
-        }
-        else if (y < 0)
-        {
-            anim.SetBool("movingUp", false);
-            anim.SetBool("movingDown", true);
+    private void CheckMovement(float x, float y) {
+        if (angryTime > 0) {
+            if (x > 0) {
+                // anim.SetBool("movingRight", true);
+                // anim.SetBool("movingLeft", false);
+                anim.Play(SeanAnimationStates.WalkRightAttack);
+                dir = Enums.Direction.Right;
+            } else if (x < 0) {
+                // anim.SetBool("movingRight", false);
+                // anim.SetBool("movingLeft", true);
+                anim.Play(SeanAnimationStates.WalkLeftAttack);
+                dir = Enums.Direction.Left;
+            } else if (y > 0) {
+                // anim.SetBool("movingUp", true);
+                // anim.SetBool("movingDown", false);
+                anim.Play(SeanAnimationStates.WalkUp);
+                dir = Enums.Direction.Up;
+            } else if (y < 0) {
+                // anim.SetBool("movingUp", false);
+                // anim.SetBool("movingDown", true);
+                anim.Play(SeanAnimationStates.WalkDownAttack);
+                dir = Enums.Direction.Down;
+            }
+        } else {
+            if (x > 0) {
+                // anim.SetBool("movingRight", true);
+                // anim.SetBool("movingLeft", false);
+                anim.Play(SeanAnimationStates.WalkRight);
+                dir = Enums.Direction.Right;
+            } else if (x < 0) {
+                // anim.SetBool("movingRight", false);
+                // anim.SetBool("movingLeft", true);
+                anim.Play(SeanAnimationStates.WalkLeft);
+                dir = Enums.Direction.Left;
+            } else if (y > 0) {
+                // anim.SetBool("movingUp", true);
+                // anim.SetBool("movingDown", false);
+                anim.Play(SeanAnimationStates.WalkUp);
+                dir = Enums.Direction.Up;
+            } else if (y < 0) {
+                // anim.SetBool("movingUp", false);
+                // anim.SetBool("movingDown", true);
+                anim.Play(SeanAnimationStates.WalkDown);
+                dir = Enums.Direction.Down;
+            }
         }
 
         if (x != 0 || y != 0)
-            anim.SetBool("idle", false);
+            // anim.SetBool("idle", false);
+            return;
+        
+        // anim.SetBool("idle", true);
+        Idle();
+
+    }
+
+    private void Idle() {
+        if (angryTime > 0)
+            switch (dir) {
+                case Enums.Direction.Left:
+                    anim.Play(SeanAnimationStates.IdleLeftAttack);
+                    break;
+                case Enums.Direction.Right:
+                    anim.Play(SeanAnimationStates.IdleRightAttack);
+                    break;
+                case Enums.Direction.Up:
+                    anim.Play(SeanAnimationStates.IdleUp);
+                    break;
+                case Enums.Direction.Down:
+                    anim.Play(SeanAnimationStates.IdleDownAttack);
+                    break;
+                default:
+                    break;
+        }
         else
-            anim.SetBool("idle", true);
+            switch (dir) {
+                case Enums.Direction.Left:
+                    anim.Play(SeanAnimationStates.IdleLeft);
+                    break;
+                case Enums.Direction.Right:
+                    anim.Play(SeanAnimationStates.IdleRight);
+                    break;
+                case Enums.Direction.Up:
+                    anim.Play(SeanAnimationStates.IdleUp);
+                    break;
+                case Enums.Direction.Down:
+                    anim.Play(SeanAnimationStates.IdleDown);
+                    break;
+                default:
+                    break;
+            }
+
     }
 
     public void SetActive(bool b)
@@ -288,4 +380,6 @@ public class PlayerController : MonoBehaviour
         active = b;
         rb.isKinematic = !b;
     }
+
+    public void StopAttacking() { attacking = false; }
 }
