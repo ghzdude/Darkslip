@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Common;
 
 public class InventoryManager : MonoBehaviour
 {
+    private Dictionary<Collectable, int> items;
     private List<Collectable> itemList;
     private List<int> itemListCount;
     private List<GameObject> entries;
@@ -21,6 +23,7 @@ public class InventoryManager : MonoBehaviour
 
     public void ClearInventory() {
         // Set Variables
+        items= new Dictionary<Collectable, int>();
         itemList = new List<Collectable>();
         itemListCount = new List<int>();
         entries = new List<GameObject>();

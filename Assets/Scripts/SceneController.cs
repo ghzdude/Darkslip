@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Common;
+using System.IO;
 
 public class SceneController : MonoBehaviour
 {
+    public GameObject PlayerPrefab;
+
     private RectTransform Canvas;
     private DialogueManager DialogueManager;
     private Transform Player;
@@ -29,7 +33,6 @@ public class SceneController : MonoBehaviour
         initialized = false;
     }
 
-    // Required Signature (Scene scene, LoadSceneMode mode)
     private void OnEnable() {
         SceneManager.sceneLoaded += ResetSceneParams;
     }
@@ -38,14 +41,18 @@ public class SceneController : MonoBehaviour
         SceneManager.sceneLoaded -= ResetSceneParams;
     }
 
+    // Required Signature (Scene scene, LoadSceneMode mode)
     private void ResetSceneParams(Scene scene, LoadSceneMode mode) {
         bool hasAudioListener = false;
+        bool doesPlayerExist = false;
 
         // Search Any Scene After Manager
         if (scene.buildIndex > 0) {
 
             if (Player != null && initialized) {
                 Player.position = plrOldPosition;
+            } else if (initialized) {
+                Player = Instantiate(PlayerPrefab).transform;
             }
             
             // First Time Initializing

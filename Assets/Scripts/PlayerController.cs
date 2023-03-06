@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Common;
 
 public class PlayerController : MonoBehaviour
 {
@@ -32,9 +33,9 @@ public class PlayerController : MonoBehaviour
         src = gameObject.GetComponent<AudioSource>();
         nav = gameObject.GetComponent<NavigationController>();
 
-        Camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
-        SceneController = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
+        Camera = Managers.GetCamera();
+        DialogueManager = Managers.GetDialogueManager();
+        SceneController = Managers.GetSceneController();
         maxHealth = DialogueManager.GetMaxHearts() * 2;
         health = maxHealth; // Set Health
         DialogueManager.UpdateHealthGUI(this);

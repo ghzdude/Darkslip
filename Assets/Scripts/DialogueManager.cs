@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Common;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -103,14 +104,12 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void SetPlayer(Transform player)
-    {
+    public void SetPlayer(Transform player) {
         Player = player;
         src = Player.GetComponent<AudioSource>();
     }
 
-    public void InitializeCanvas()
-    {
+    public void InitializeCanvas() {
         DialoguePanel.gameObject.SetActive(false);
         InfoPanel.gameObject.SetActive(false);
         PauseMenu.gameObject.SetActive(false);
@@ -121,15 +120,13 @@ public class DialogueManager : MonoBehaviour
         Credits.gameObject.SetActive(false);
     }
 
-    public void InitializeMainMenu()
-    {
+    public void InitializeMainMenu() {
         MainMenu.gameObject.SetActive(true);
         GameMenu.gameObject.SetActive(false);
         Credits.gameObject.SetActive(false);
     }
 
-    public void InitializeGameMenu()
-    {
+    public void InitializeGameMenu() {
         GameMenu.gameObject.SetActive(true);
         MainMenu.gameObject.SetActive(false);
         Credits.gameObject.SetActive(false);
