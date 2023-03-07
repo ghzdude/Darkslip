@@ -7,11 +7,11 @@ using System.IO;
 
 public class SceneController : MonoBehaviour
 {
-    public GameObject PlayerPrefab;
+    private Transform SpawnPoint;
 
     private RectTransform Canvas;
     private DialogueManager DialogueManager;
-    private Transform Player;
+    private GameObject Player;
     private InventoryManager InventoryManager;
     private MusicManager MusicManager;
     private Vector3 plrOldPosition;
@@ -25,7 +25,7 @@ public class SceneController : MonoBehaviour
     {
         if (Music != null)
             Music.volume = DialogueManager.GetMusicSliderValue();
-        if(SFX != null)
+        if (SFX != null)
             SFX.volume = DialogueManager.GetSFXSliderValue();
     }
     private void Awake()
@@ -44,38 +44,49 @@ public class SceneController : MonoBehaviour
     // Required Signature (Scene scene, LoadSceneMode mode)
     private void ResetSceneParams(Scene scene, LoadSceneMode mode) {
         bool hasAudioListener = false;
-        bool doesPlayerExist = false;
+        // bool doesPlayerExist = false;
 
         // Search Any Scene After Manager
         if (scene.buildIndex > 0) {
 
             if (Player != null && initialized) {
-                Player.position = plrOldPosition;
-            } else if (initialized) {
-                Player = Instantiate(PlayerPrefab).transform;
+                Player.transform.position = plrOldPosition;
             }
             
             // First Time Initializing
             if (!initialized) {
+
+                DialogueManager = Managers.GetDialogueManager();
+                InventoryManager = Managers.GetInventoryManager();
+                Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<RectTransform>();
+                Music = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
+                MusicManager = Music.GetComponent<MusicManager>();
+
+                DialogueManager.SetCanvasObjects(Canvas);
                 DialogueManager.InitializeCanvas();
                 DialogueManager.InitializeGameMenu();
                 DialogueManager.InitializeHealthObjects();
                 initialized = true;
             }
+                
+            Player = Resources.Load<GameObject>(Paths.Player);
+            Instantiate(Player, SpawnPoint.position, Quaternion.identity);
+            Debug.Log(string.Format("spawned player: {0}", Player));
 
             GameObject[] Objects = scene.GetRootGameObjects();
             for (int i = 0; i < Objects.Length; i++) {
-                GameObject obj = Objects[i];
-                switch (obj.tag) {
-                    case "Player":
-                        Player = obj.transform;
+                switch (Objects[i].tag) {
+                    case Tags.Player:
+                        // Player = Objects[i].transform;
                         SFX = Player.GetComponent<AudioSource>();
+                        break;
+                    case Tags.Camera:
                         break;
                     default:
                         break;
                 }
                 
-                if (obj.GetComponent<AudioListener>() != null) {
+                if (Objects[i].GetComponent<AudioListener>() != null) {
                     hasAudioListener = true;
                 }
             }
@@ -89,17 +100,10 @@ public class SceneController : MonoBehaviour
         SceneManager.SetActiveScene(scene);
 
         // Search Any Loaded Scene
-        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
-        InventoryManager = GameObject.FindGameObjectWithTag("InventoryManager").GetComponent<InventoryManager>();
-        Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<RectTransform>();
-        Music = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
-        MusicManager = Music.GetComponent<MusicManager>();
-
-        DialogueManager.SetCanvasObjects(Canvas);
 
         if (scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1) {
             if (Player != null) {
-                DialogueManager.SetPlayer(Player);
+                DialogueManager.SetPlayer(Player.transform);
             }
             InventoryManager.InventoryPanel = DialogueManager.GetInventoryPanel();
         } else if (scene.name == Scenes.Credits) {
