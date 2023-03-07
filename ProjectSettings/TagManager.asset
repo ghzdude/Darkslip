@@ -18,6 +18,7 @@ TagManager:
   - Canvas
   - Music
   - Tram
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

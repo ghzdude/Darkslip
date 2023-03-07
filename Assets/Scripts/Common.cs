@@ -17,6 +17,9 @@ namespace Common
         public static SceneController GetSceneController() => GameObject.FindGameObjectWithTag(Tags.SceneManager).GetComponent<SceneController>();
         public static InventoryManager GetInventoryManager() => GameObject.FindGameObjectWithTag(Tags.InventoryManager).GetComponent<InventoryManager>();
         public static PlayerController GetPlayerController() => GameObject.FindGameObjectWithTag(Tags.Player).GetComponent<PlayerController>();
+        public static RectTransform GetCanvas() => GameObject.FindGameObjectWithTag(Tags.Canvas).GetComponent<RectTransform>();
+        public static AudioSource GetMusic() => GameObject.FindGameObjectWithTag(Tags.Music).GetComponent<AudioSource>();
+        public static Transform GetSpawnPoint() => GameObject.FindGameObjectWithTag(Tags.SpawnPoint).transform;
         public static Transform GetCamera() => GameObject.FindGameObjectWithTag(Tags.Camera).transform;
     }
 
@@ -64,6 +67,7 @@ namespace Common
         public const string InventoryManager = "InventoryManager";
         public const string Player = "Player";
         public const string Camera = "MainCamera";
+        public const string SpawnPoint = "SpawnPoint";
     }
 
     public class SeanAnimationStates
@@ -93,6 +97,6 @@ namespace Common
     }
 
     public class Paths {
-        public const string Player = "Prefabs/Sean.prefab";
+        public const string Player = "Prefabs/Sean";
     }
 }

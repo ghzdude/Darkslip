@@ -6,7 +6,7 @@ using Common;
 
 public class DialogueManager : MonoBehaviour
 {
-
+    // todo deak wuth all of these goddamn variables
     private string text;
     private TypeWriterFX typer;
     [Header("Dialogue Sounds")]
@@ -60,6 +60,8 @@ public class DialogueManager : MonoBehaviour
 
     public void SetCanvasObjects (RectTransform canvas)
     {
+        // get child central wtf
+        
         GameMenu = canvas.GetChild(1);
         MainMenu = canvas.GetChild(0);
 

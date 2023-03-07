@@ -8,7 +8,6 @@ using System.IO;
 public class SceneController : MonoBehaviour
 {
     private Transform SpawnPoint;
-
     private RectTransform Canvas;
     private DialogueManager DialogueManager;
     private GameObject Player;
@@ -28,8 +27,17 @@ public class SceneController : MonoBehaviour
         if (SFX != null)
             SFX.volume = DialogueManager.GetSFXSliderValue();
     }
+
     private void Awake()
     {
+        DialogueManager = Managers.GetDialogueManager();
+        InventoryManager = Managers.GetInventoryManager();
+        Canvas = Managers.GetCanvas();
+        Music = Managers.GetMusic();
+        MusicManager = Music.GetComponent<MusicManager>();
+        Player = Resources.Load<GameObject>(Paths.Player);
+        SFX = Player.GetComponent<AudioSource>();
+        gameObject.AddComponent<AudioListener>();
         initialized = false;
     }
 
@@ -43,8 +51,6 @@ public class SceneController : MonoBehaviour
 
     // Required Signature (Scene scene, LoadSceneMode mode)
     private void ResetSceneParams(Scene scene, LoadSceneMode mode) {
-        bool hasAudioListener = false;
-        // bool doesPlayerExist = false;
 
         // Search Any Scene After Manager
         if (scene.buildIndex > 0) {
@@ -56,46 +62,17 @@ public class SceneController : MonoBehaviour
             // First Time Initializing
             if (!initialized) {
 
-                DialogueManager = Managers.GetDialogueManager();
-                InventoryManager = Managers.GetInventoryManager();
-                Canvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<RectTransform>();
-                Music = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
-                MusicManager = Music.GetComponent<MusicManager>();
-
                 DialogueManager.SetCanvasObjects(Canvas);
                 DialogueManager.InitializeCanvas();
                 DialogueManager.InitializeGameMenu();
                 DialogueManager.InitializeHealthObjects();
+                Destroy(gameObject.GetComponent<AudioListener>());
+                
                 initialized = true;
             }
-                
-            Player = Resources.Load<GameObject>(Paths.Player);
-            Instantiate(Player, SpawnPoint.position, Quaternion.identity);
+            
             Debug.Log(string.Format("spawned player: {0}", Player));
 
-            GameObject[] Objects = scene.GetRootGameObjects();
-            for (int i = 0; i < Objects.Length; i++) {
-                switch (Objects[i].tag) {
-                    case Tags.Player:
-                        // Player = Objects[i].transform;
-                        SFX = Player.GetComponent<AudioSource>();
-                        break;
-                    case Tags.Camera:
-                        break;
-                    default:
-                        break;
-                }
-                
-                if (Objects[i].GetComponent<AudioListener>() != null) {
-                    hasAudioListener = true;
-                }
-            }
-
-            if (hasAudioListener) {
-                Destroy(gameObject.GetComponent<AudioListener>());
-            } else if (gameObject.GetComponent<AudioListener>() == null) {
-                gameObject.AddComponent<AudioListener>();
-            }
         }
         SceneManager.SetActiveScene(scene);
 
@@ -106,6 +83,7 @@ public class SceneController : MonoBehaviour
                 DialogueManager.SetPlayer(Player.transform);
             }
             InventoryManager.InventoryPanel = DialogueManager.GetInventoryPanel();
+            SpawnPoint = Managers.GetSpawnPoint();
         } else if (scene.name == Scenes.Credits) {
             MusicManager.SetMusic(Enums.Music.Credits);
             DialogueManager.InitializeCredits();
@@ -116,12 +94,15 @@ public class SceneController : MonoBehaviour
         if (scene.buildIndex == 0) {
             DialogueManager.InitializeMainMenu();
             MusicManager.SetMusic(Enums.Music.MainMenu);
+            return;
         }
 
         // First Level only
         if (scene.buildIndex == 1) { 
             InventoryManager.ClearInventory();
             MusicManager.SetMusic(Enums.Music.DockingBay3);
+            Player = Instantiate(Player, SpawnPoint.position, Quaternion.identity);
+            return;
         }
     }
 
