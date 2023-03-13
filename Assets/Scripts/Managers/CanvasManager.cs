@@ -7,19 +7,12 @@ using Common;
 public class CanvasManager : MonoBehaviour
 {
     // todo deal wuth all of these goddamn variables
-    [Header("Dialogue Sounds")]
-    public AudioClip dialogueOpen;
-    public AudioClip dialogueClose;
-    [Header("Character")]
-    public Sprite seanSprite;
-    public Sprite doctorSprite;
-    public GameObject fullbright;
+    // public GameObject fullbright;
     public Sprite[] HeartIcons; // 0 is heartFull, 1 is heartHalf, 2 is heartEmpty
-    public GameObject Heart;
-    private List<RectTransform> Hearts;
+    public GameObject HeartPrefab;
     public float horizontalOffset;
-    public int maxHearts;
-    private Transform Player;
+    private List<RectTransform> Hearts;
+    private int maxHearts;
     private Transform GameMenu;
     private Transform MainMenu;
     private Transform PauseMenu;
@@ -29,23 +22,19 @@ public class CanvasManager : MonoBehaviour
     private Transform TramSelector;
     [Header("Canvas Objects")]
     public DialogueManager dialogueManager;
-    public RectTransform canvas;
-    public Transform Credits;
+    public GameObject Credits;
     public Keypad keypad;
+    private RectTransform canvas;
     private Button btn_lobby;
     private Button btn_office;
     private Slider sdr_music;
     private Slider sdr_sfx;
 
-    private void Awake()
-    {
-        Player = Managers.GetPlayerController().transform;
-    }
-
     public void SetCanvasObjects ()
     {
         // GetChild() central wtf
-        
+        canvas = GetComponent<RectTransform>();
+
         GameMenu = canvas.GetChild(1);
         MainMenu = canvas.GetChild(0);
 
@@ -61,18 +50,16 @@ public class CanvasManager : MonoBehaviour
 
         btn_lobby = TramSelector.GetChild(2).GetChild(0).GetComponent<Button>();
         btn_office = TramSelector.GetChild(2).GetChild(1).GetComponent<Button>();
-
-        if (fullbright != null && fullbright.activeInHierarchy)
-        {
-            fullbright.SetActive(false);
-        }
     }
 
     public void InitializeHealthObjects() {
+        maxHearts = Managers.GetPlayerController().maxHealth / 2;
+
+        // todo replace with health bar instead of hearts
         if (HealthContainer.childCount == 0) {
             Hearts = new List<RectTransform>();
             for (int i = 0; i<maxHearts; i++) {
-                Hearts.Add(Instantiate(Heart, HealthContainer).GetComponent<RectTransform>());
+                Hearts.Add(Instantiate(HeartPrefab, HealthContainer).GetComponent<RectTransform>());
                 Hearts[i].anchoredPosition = new Vector2(Hearts[i].anchoredPosition.x + (horizontalOffset* i), Hearts[i].anchoredPosition.y);
 }
             // Debug.Log("Hearts generated");
@@ -170,10 +157,12 @@ public class CanvasManager : MonoBehaviour
     }
 
     public void TestHealth(bool shouldDamage) {
+            PlayerController Player = Managers.GetPlayerController();
+
         if (shouldDamage)
-            Player.GetComponent<PlayerController>().DecHealth();
+            Player.DecHealth();
         else
-            Player.GetComponent<PlayerController>().IncHealth();
+            Player.IncHealth();
     }
 
     public int GetMaxHearts() => maxHearts;
@@ -181,8 +170,6 @@ public class CanvasManager : MonoBehaviour
     public float GetMusicSliderValue() => sdr_music.normalizedValue;
     
     public float GetSFXSliderValue() => sdr_sfx.normalizedValue;
-
-    public void ToggleFullbright() => fullbright.SetActive(!fullbright.activeInHierarchy);
 
     public void InitializeTramButtons() {
         Tram tram = GameObject.FindGameObjectWithTag("Tram").GetComponent<Tram>();

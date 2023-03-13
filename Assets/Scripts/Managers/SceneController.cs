@@ -40,6 +40,7 @@ public class SceneController : MonoBehaviour
         // Search Any Scene After Manager
         if (scene.buildIndex > 0) {
 
+            SpawnPoint = Managers.GetSpawnPoint();
             if (Player != null && initialized) {
                 Player.transform.position = plrOldPosition;
             }
@@ -62,10 +63,7 @@ public class SceneController : MonoBehaviour
 
         // Search Any Loaded Scene
 
-        if (scene.buildIndex < SceneManager.sceneCountInBuildSettings - 1) {
-            // InventoryManager.InventoryPanel = DialogueManager.GetInventoryPanel();
-            SpawnPoint = Managers.GetSpawnPoint();
-        } else if (scene.name == Scenes.Credits) {
+        if (scene.name == Scenes.Credits) {
             MusicManager.SetMusic(Enums.Music.Credits);
             CanvasManager.InitializeCredits();
             Managers.GetCamera().position = Vector3.zero;

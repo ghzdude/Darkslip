@@ -7,8 +7,8 @@ public class AudioController : MonoBehaviour
 {
     private AudioSource playerSrc;
     private AudioSource musicSrc;
+    
     private void Start() {
-        playerSrc = Managers.GetPlayerController().GetComponent<AudioSource>();
         musicSrc = GetComponent<AudioSource>();
     }
 
@@ -22,6 +22,9 @@ public class AudioController : MonoBehaviour
 
     public void PlayClip(AudioClip clip)
     {
+        if (playerSrc == null)
+            playerSrc = Managers.GetPlayerController().GetComponent<AudioSource>();
+
         playerSrc.PlayOneShot(clip, Managers.GetCanvasManager().GetSFXSliderValue());
     }
 }
