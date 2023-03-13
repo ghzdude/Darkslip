@@ -16,7 +16,7 @@ public class Collectable : MonoBehaviour
 
     private void Start() {
         icon = GetComponent<SpriteRenderer>().sprite;
-        Player = GameObject.FindGameObjectWithTag("Player").transform;
+        Player = Managers.GetPlayerController().transform;
         MarkerTrigger = GetComponent<MarkerTrigger>();
 
         if (transform.Find(glowingSprite.name) == null)
@@ -24,7 +24,7 @@ public class Collectable : MonoBehaviour
     }
 
     public void Fire() {
-        if (!Managers.GetDialogueManager().dialogueActive && Player != null) {
+        if (!Managers.GetDialogueManager().IsActive() && Player != null) {
             if (!characterResponse)
                 Managers.GetDialogueManager().EnableDialogueBox(TextOnPickup);
             else
@@ -34,7 +34,7 @@ public class Collectable : MonoBehaviour
                 MarkerTrigger.GenericTrigger(Player.GetComponent<NavigationController>());
             }
             transform.SetParent(Player.GetChild(0));
-
+            
         } else {
             Debug.Log("Player transform is null, collectable not parented to player inventory!");
         }

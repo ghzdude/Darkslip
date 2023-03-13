@@ -12,7 +12,7 @@ public class Terminal : MonoBehaviour
     public bool quitGame;
     public bool requiresCode;
     public string correctCode;
-    private bool active;
+    public bool active;
 
     // Start is called before the first frame update
     void Start() {
@@ -22,10 +22,10 @@ public class Terminal : MonoBehaviour
 
     public void Fire() {
         if (active) {
-            src.PlayOneShot(activate, Managers.GetDialogueManager().GetSFXSliderValue());
+            src.PlayOneShot(activate, Managers.GetCanvasManager().GetSFXSliderValue());
 
             if (requiresCode) {
-                Managers.GetDialogueManager().OpenCodeEntry(this);
+                Managers.GetCanvasManager().keypad.OpenCodeEntry(this);
             } else {
                 if (target.GetComponent<DoorController>() != null) {
                     target.GetComponent<DoorController>().OpenDoor();
@@ -43,7 +43,7 @@ public class Terminal : MonoBehaviour
 
     public void Fire (bool succeed) {
         if (active && succeed) {
-            src.PlayOneShot(activate, Managers.GetDialogueManager().GetSFXSliderValue());
+            Managers.GetMusic().GetAudioController().PlayClip(activate);
 
             if (target.GetComponent<DoorController>() != null) {
                 target.GetComponent<DoorController>().OpenDoor();
@@ -51,15 +51,8 @@ public class Terminal : MonoBehaviour
                 CheckDialogue();
                 return;
             }
+            active = false;
         }
-    }
-
-    public void Disable() {
-        active = false;
-    }
-
-    public void Enable() {
-        active = true;
     }
 
     private void SetMarker() {
@@ -69,7 +62,7 @@ public class Terminal : MonoBehaviour
 
     private void CheckDialogue() {
         if (GetComponent<CreateDialogue>() != null) {
-            GetComponent<CreateDialogue>().EnableDialogueBox();
+            GetComponent<CreateDialogue>().TriggerDialogue();
         }
     }
 }

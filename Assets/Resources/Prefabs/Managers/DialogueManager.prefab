@@ -9,8 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2582961136026288514}
-  - component: {fileID: 2582961136026288515}
-  - component: {fileID: 1756547743657587959}
   m_Layer: 0
   m_Name: DialogueManager
   m_TagString: DialogueManager
@@ -28,45 +26,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.1623898, y: 22.489155, z: 60.67658}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2582961136026288515
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2582961136026288525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fb5371a8127ef442abaa23d9acddd81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  text: 
-  dialogueOpen: {fileID: 8300000, guid: e3bcb7d05ea79e34187b36e7cc64a3ce, type: 3}
-  dialogueClose: {fileID: 8300000, guid: 4871071c494bd884dbe1f151a531d6ce, type: 3}
-  seanSprite: {fileID: -4393859362170001284, guid: 8d941ef0ae5eb204fbc3c0bb45f41594, type: 3}
-  doctorSprite: {fileID: 5389387911156544634, guid: 8d941ef0ae5eb204fbc3c0bb45f41594, type: 3}
-  HeartIcons:
-  - {fileID: -3727842135710763035, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
-  - {fileID: -6050296909894318094, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
-  - {fileID: -3201709878794754465, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
-  Heart: {fileID: 6511847156878521319, guid: fc2f99b79d67cb743bd2c9b974f29d17, type: 3}
-  horizontalOffset: 90
-  maxHearts: 3
---- !u!114 &1756547743657587959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2582961136026288525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b90d9a9347fe7a54da3b37c6d6b71202, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  revealSpeed: 3
-  completed: 0

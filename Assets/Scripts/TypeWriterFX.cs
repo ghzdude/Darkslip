@@ -6,37 +6,33 @@ using Common;
 
 public class TypeWriterFX : MonoBehaviour
 {
-    private string stored;
+    private Text stored;
     private char[] startTxt;
     [Tooltip("Reveal Speed / 100")]
     public float revealSpeed;
     public AudioClip typeSound;
-    private AudioSource src;
     private int waitIndex;
     [HideInInspector] public bool completed;
-    private DialogueManager DialogueManager;
     public bool running;
 
-    private void Awake() {
-        DialogueManager = GetComponent<DialogueManager>();
-    }
-
-    public void TypeWriter(Text txt, AudioSource src) {
-        this.src = src;
+    public void Run(Text text) {
         completed = false;
         ClearText();
         // txt = gameObject.GetComponent<Text>();
-        stored = txt.text;
-        startTxt = new char[stored.Length];
-        txt.text = "";
+        stored = text;
+        startTxt = new char[stored.text.Length];
+        text.text = "";
+
         if (!running) {
-            StartCoroutine(StartType(txt));
+            StartCoroutine(
+                StartType(stored)
+            );
         }
     }
 
     public void ClearText() {
         // index = 0;
-        stored = "";
+        stored.text = "";
         startTxt = new char[0];
     }
 
@@ -47,28 +43,21 @@ public class TypeWriterFX : MonoBehaviour
 
     IEnumerator StartType(Text txt) {
         running = true;
-        for (int i = 0; i < stored.Length; i++) {
-            if (stored[i] == '\\' ) {
-                waitIndex = int.Parse(stored[i + 1].ToString() + stored[i + 2].ToString());
+        for (int i = 0; i < stored.text.Length; i++) {
+            if (stored.text[i] == '\\' ) {
+                waitIndex = int.Parse(stored.text[i + 1].ToString() + stored.text[i + 2].ToString());
                 i += 2;
                 for (int j = 0; j < waitIndex; j++) {
                     yield return new WaitForSecondsRealtime(revealSpeed / 100);
                 }
                 continue;
             }
-            if (stored[i] != ' ') {
-                src.PlayOneShot(typeSound, Managers.GetDialogueManager().GetSFXSliderValue() / 3);
+            if (stored.text[i] != ' ') {
+                Managers.GetMusic().GetAudioController().PlayClip(typeSound);
             }
-            txt.text += stored[i];
+            txt.text += stored.text[i];
             yield return new WaitForSecondsRealtime(revealSpeed / 100);
         }
-        /*
-        while (txt.text.Length < stored.Length) {
-            startTxt[index] = stored[index];
-            txt.text += startTxt[index];
-            index++;
-            yield return new WaitForSecondsRealtime(revealSpeed / 100);
-        }*/
         completed = true;
         running = false;
         yield return null;

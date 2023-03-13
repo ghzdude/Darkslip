@@ -24,7 +24,7 @@ public class HealthManager : MonoBehaviour
         health -= hit;
 
         if (health <= 0) { // On Death
-            src.PlayOneShot(destroyed, Managers.GetDialogueManager().GetSFXSliderValue());
+            src.PlayOneShot(destroyed, Managers.GetCanvasManager().GetSFXSliderValue());
             gameObject.SetActive(false);
             if (GetComponent<CreateEnemy>() != null) {
                 GetComponent<CreateEnemy>().InstantiateEnemy();
@@ -35,7 +35,7 @@ public class HealthManager : MonoBehaviour
             return;
         } else { // Still Alive
             sprite.sprite = damagedSprites[health - 1];
-            src.PlayOneShot(this.hit, Managers.GetDialogueManager().GetSFXSliderValue());
+            src.PlayOneShot(this.hit, Managers.GetCanvasManager().GetSFXSliderValue());
         }
     }
 

@@ -19,6 +19,7 @@ TagManager:
   - Music
   - Tram
   - SpawnPoint
+  - AudioController
   layers:
   - Default
   - TransparentFX

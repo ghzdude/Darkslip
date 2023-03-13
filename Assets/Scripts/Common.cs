@@ -13,12 +13,13 @@ namespace Common
 
     public class Managers
     {
-        public static DialogueManager GetDialogueManager() => GameObject.FindGameObjectWithTag(Tags.DialogueManager).GetComponent<DialogueManager>();
         public static SceneController GetSceneController() => GameObject.FindGameObjectWithTag(Tags.SceneManager).GetComponent<SceneController>();
         public static InventoryManager GetInventoryManager() => GameObject.FindGameObjectWithTag(Tags.InventoryManager).GetComponent<InventoryManager>();
+        public static DialogueManager GetDialogueManager() => GameObject.FindGameObjectWithTag(Tags.DialogueManager).GetComponent<DialogueManager>();
         public static PlayerController GetPlayerController() => GameObject.FindGameObjectWithTag(Tags.Player).GetComponent<PlayerController>();
         public static RectTransform GetCanvas() => GameObject.FindGameObjectWithTag(Tags.Canvas).GetComponent<RectTransform>();
-        public static AudioSource GetMusic() => GameObject.FindGameObjectWithTag(Tags.Music).GetComponent<AudioSource>();
+        public static CanvasManager GetCanvasManager() => GetCanvas().GetComponent<CanvasManager>();
+        public static MusicManager GetMusic() => GameObject.FindGameObjectWithTag(Tags.Music).GetComponent<MusicManager>();
         public static Transform GetSpawnPoint() => GameObject.FindGameObjectWithTag(Tags.SpawnPoint).transform;
         public static Transform GetCamera() => GameObject.FindGameObjectWithTag(Tags.Camera).transform;
     }
@@ -40,9 +41,9 @@ namespace Common
     {
         public static Vector2 CalculateVector(Vector2 a, Vector2 b) => b - a;
 
-        public static Vector3 LookAt2D(Vector3 pointer, Vector3 pos)
+        public static Vector3 LookAt2D(Vector3 self, Vector3 lookAt)
         {
-            Vector3 target = new Vector3(pos.x - pointer.x, pos.y - pointer.y);
+            Vector3 target = new Vector3(lookAt.x - self.x, lookAt.y - self.y);
             float rotation = Mathf.Atan2(target.y, target.x) * Mathf.Rad2Deg;
             target = new Vector3(0f, 0f, rotation - 90f);
             return target;
@@ -51,6 +52,7 @@ namespace Common
 
     public static class Tags
     {
+        public const string AudioController = "AudioController";
         public const string Destructible = "Destructible";
         public const string Interactable = "Interactable";
         public const string EndDemo = "EndDemo";
@@ -98,5 +100,7 @@ namespace Common
 
     public class Paths {
         public const string Player = "Prefabs/Sean";
+        public const string ItemEntry = "Prefabs/UI/Item Entry";
+        public const string StaticAnimator = "Animations/staticPortrait1";
     }
 }

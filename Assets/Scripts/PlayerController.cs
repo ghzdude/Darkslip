@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private bool attacking;
     private Vector2 controlVector;
     private int health;
-    private DialogueManager DialogueManager;
+    private CanvasManager DialogueManager;
     [HideInInspector] public int maxHealth;
     private Transform Camera;
     public GameObject[] castPositions;
@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
         nav = gameObject.GetComponent<NavigationController>();
 
         Camera = Managers.GetCamera();
-        DialogueManager = Managers.GetDialogueManager();
+        DialogueManager = Managers.GetCanvasManager();
         SceneController = Managers.GetSceneController();
         maxHealth = DialogueManager.GetMaxHearts() * 2;
         health = maxHealth; // Set Health
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!DialogueManager.dialogueActive) {
+        if (Managers.GetDialogueManager().IsActive()) {
             if (Input.GetKeyDown(KeyCode.Z))
                 Interact();
         }
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
-        src.PlayOneShot(gunShot, Managers.GetDialogueManager().GetSFXSliderValue() * 1.1f);
+        src.PlayOneShot(gunShot, Managers.GetCanvasManager().GetSFXSliderValue() * 1.1f);
 
         if (hits != null && hits.Length > 0) {
             for (int i = 0; i < hits.Length; i++) {
@@ -215,12 +215,12 @@ public class PlayerController : MonoBehaviour
 
                 if (hit.GetComponent<Collectable>()  != null) {
                     hit.GetComponent<Collectable>().Fire();
-                    SceneController.GetInventoryManager().AddItem(hit.GetComponent<Collectable>());
+                    Managers.GetInventoryManager().AddItem(hit.GetComponent<Collectable>());
                     return;
                 }
 
                 if (hit.GetComponent<CreateDialogue>() != null) {
-                    hit.GetComponent<CreateDialogue>().EnableDialogueBox();
+                    hit.GetComponent<CreateDialogue>().TriggerDialogue();
                 }
             }
         }

@@ -9,50 +9,43 @@ public class MusicManager : MonoBehaviour
     public AudioClip Tram;
     public AudioClip Office;
     public AudioClip Credits;
-    private AudioSource src;
+    private AudioController audioController;
 
     private void Awake() {
-        src = GetComponent<AudioSource>();
+        audioController = GetComponent<AudioController>();
     }
 
     public void SetMusic(Enums.Music type) {
+        AudioClip clip = null;
+        
         switch (type) {
             case Enums.Music.MainMenu:
-                if (MainMenu != null) {
-                    src.clip = MainMenu;
-                }
+                clip = MainMenu;
                 break;
             case Enums.Music.DockingBay3:
-                if (DockingBay3 != null) {
-                    src.clip = DockingBay3;
-                }
+                clip = DockingBay3;
                 break;
             case Enums.Music.Lobby:
-                if (Lobby != null) {
-                    src.clip = Lobby;
-                }
+                clip = Lobby;
                 break;
             case Enums.Music.Tram:
-                if (Tram != null) {
-                    src.clip = Tram;
-                }
+                clip = Tram;
                 break;
             case Enums.Music.Office:
-                if (Office != null) {
-                    src.clip = Office;
-                }
+                clip = Office;
                 break;
             case Enums.Music.Credits:
-                if (Credits != null) {
-                    src.clip = Credits;
-                }
+                clip = Credits;
                 break;
             default:
                 break;
         }
 
-        if (!src.isPlaying) {
-            src.Play();
-        }
+        if (clip == null)
+            return;
+
+        audioController.PlayMusic(clip);
     }
+
+    public AudioController GetAudioController() => audioController;
 }

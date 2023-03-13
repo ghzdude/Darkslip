@@ -43,7 +43,7 @@ public class EnemyBehavior : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if (health <= 0) {
-            src.PlayOneShot(death, Managers.GetDialogueManager().GetSFXSliderValue());
+            src.PlayOneShot(death, Managers.GetCanvasManager().GetSFXSliderValue());
             gameObject.SetActive(false);
         }
 
@@ -229,7 +229,7 @@ public class EnemyBehavior : MonoBehaviour {
                 break;
         }
 
-        src.PlayOneShot(attack, Managers.GetDialogueManager().GetSFXSliderValue());
+        src.PlayOneShot(attack, Managers.GetCanvasManager().GetSFXSliderValue());
 
         for (int i = 0; i < hits.Length; i++) {
             if (hits[i].collider.GetComponent<PlayerController>() != null) {
@@ -249,7 +249,7 @@ public class EnemyBehavior : MonoBehaviour {
         timer = dazedTimer;
 
         if (health > 0) {
-            src.PlayOneShot(hurt, Managers.GetDialogueManager().GetSFXSliderValue());
+            src.PlayOneShot(hurt, Managers.GetCanvasManager().GetSFXSliderValue());
         }
     }
 
