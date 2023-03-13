@@ -573,6 +573,7 @@ GameObject:
   - component: {fileID: 1640693824597486096}
   - component: {fileID: 1640693824597486097}
   - component: {fileID: 1640693824597486102}
+  - component: {fileID: 6259275137491158657}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Canvas
@@ -664,6 +665,28 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6259275137491158657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640693824597486103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ced533f188fe3f4db9af3982906b512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HeartIcons:
+  - {fileID: -3727842135710763035, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
+  - {fileID: -6050296909894318094, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
+  - {fileID: -3201709878794754465, guid: 641ca265d5a81f143a52a568c9cdd1f9, type: 3}
+  HeartPrefab: {fileID: 6511847156878521319, guid: fc2f99b79d67cb743bd2c9b974f29d17, type: 3}
+  horizontalOffset: 5
+  maxHearts: 0
+  dialogueManager: {fileID: 2887614918959672204}
+  Credits: {fileID: 2541768169294665040}
+  keypad: {fileID: 6056244772990095189}
 --- !u!1 &1640693824669868669
 GameObject:
   m_ObjectHideFlags: 0
@@ -2223,7 +2246,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000012693727}
+  m_AnchoredPosition: {x: 0, y: 0.00012300942}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &3609873334858385460
@@ -3012,7 +3035,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 274196697577944357}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.999741
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4579,6 +4602,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f14b056bd10ad0f418067dfaebeb52a9, type: 3}
+--- !u!114 &2887614918959672204 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2960787589791566771, guid: f14b056bd10ad0f418067dfaebeb52a9, type: 3}
+  m_PrefabInstance: {fileID: 73195418726228031}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4c35745981a9a14f9a6b2f718427112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4840998147411743800 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4767804518615348231, guid: f14b056bd10ad0f418067dfaebeb52a9, type: 3}
@@ -4681,6 +4715,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1a7cef6611a04745b2571321a678635, type: 3}
+--- !u!114 &6056244772990095189 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1734963268629824495, guid: e1a7cef6611a04745b2571321a678635, type: 3}
+  m_PrefabInstance: {fileID: 5485324345778375866}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7c69224e765fb44fbf976f2467fc306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8648807705357181228 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3754161124301729174, guid: e1a7cef6611a04745b2571321a678635, type: 3}
@@ -4783,6 +4828,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 12d6cc108ad7d934388dbdcb5f12d233, type: 3}
+--- !u!1 &2541768169294665040 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4876963481567245721, guid: 12d6cc108ad7d934388dbdcb5f12d233, type: 3}
+  m_PrefabInstance: {fileID: 6982928926794981577}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &6778280610625183818 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4537678517513568387, guid: 12d6cc108ad7d934388dbdcb5f12d233, type: 3}
