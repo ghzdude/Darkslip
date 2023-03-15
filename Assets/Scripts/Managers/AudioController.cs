@@ -8,12 +8,17 @@ public class AudioController : MonoBehaviour
     private AudioSource playerSrc;
     private AudioSource musicSrc;
     
-    private void Start() {
+    private void Awake() {
         musicSrc = GetComponent<AudioSource>();
     }
 
     public void PlayMusic(AudioClip clip)
     {
+        if (musicSrc == null) {
+            Debug.Log("Music Source is " + musicSrc.ToString());
+            return;
+        }
+
         musicSrc.Stop();
         musicSrc.clip = clip;
         musicSrc.volume = Managers.GetCanvasManager().GetMusicSliderValue();

@@ -13,40 +13,26 @@ public class CanvasManager : MonoBehaviour
     public float horizontalOffset;
     private List<RectTransform> Hearts;
     private int maxHearts;
-    private Transform GameMenu;
-    private Transform MainMenu;
-    private Transform PauseMenu;
-    private Transform InventoryPanel;
-    private Transform DebugPanel;
-    private Transform HealthContainer;
-    private Transform TramSelector;
+    // private Transform InventoryPanel;
+    public InventoryManager InventoryManager;
     [Header("Canvas Objects")]
+    public Transform DebugPanel;
+    public Transform HealthContainer;
+    public Transform TramSelector;
+    public Transform GameMenu;
+    public Transform MainMenu;
+    public Transform PauseMenu;
+    public Slider sdr_music;
+    public Slider sdr_sfx;
     public DialogueManager dialogueManager;
     public GameObject Credits;
     public Keypad keypad;
-    private RectTransform canvas;
     private Button btn_lobby;
     private Button btn_office;
-    private Slider sdr_music;
-    private Slider sdr_sfx;
 
     public void SetCanvasObjects ()
     {
         // GetChild() central wtf
-        canvas = GetComponent<RectTransform>();
-
-        GameMenu = canvas.GetChild(1);
-        MainMenu = canvas.GetChild(0);
-
-        InventoryPanel = GameMenu.GetChild(3);
-        PauseMenu = GameMenu.GetChild(4);
-        HealthContainer = GameMenu.GetChild(5);
-        TramSelector = GameMenu.GetChild(7);
-        DebugPanel = GameMenu.GetChild(8);
-
-        sdr_music = PauseMenu.GetChild(2).GetComponent<Slider>();
-        sdr_sfx = PauseMenu.GetChild(3).GetComponent<Slider>();
-
 
         btn_lobby = TramSelector.GetChild(2).GetChild(0).GetComponent<Button>();
         btn_office = TramSelector.GetChild(2).GetChild(1).GetComponent<Button>();
@@ -70,7 +56,7 @@ public class CanvasManager : MonoBehaviour
         SetCanvasObjects();
         // dialogueManager.SetActive(false);
         PauseMenu.gameObject.SetActive(false);
-        InventoryPanel.gameObject.SetActive(false);
+        InventoryManager.gameObject.SetActive(false);
         keypad.gameObject.SetActive(false);
         TramSelector.gameObject.SetActive(false);
         DebugPanel.gameObject.SetActive(false);
@@ -99,12 +85,8 @@ public class CanvasManager : MonoBehaviour
     private void Update() {
         if (Input.GetKeyDown(KeyCode.Escape)) {
             PauseMenu.gameObject.SetActive(!PauseMenu.gameObject.activeInHierarchy);
-            InventoryPanel.gameObject.SetActive(!InventoryPanel.gameObject.activeInHierarchy);
+            InventoryManager.gameObject.SetActive(!InventoryManager.gameObject.activeInHierarchy);
         }
-        /*
-        if (DialoguePanel.gameObject.activeInHierarchy || InfoPanel.gameObject.activeInHierarchy) {
-            dialogueActive = true;
-        }*/
 
         // LShift + Q + E for debug
         if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.E)) {

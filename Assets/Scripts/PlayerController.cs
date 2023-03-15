@@ -14,14 +14,13 @@ public class PlayerController : MonoBehaviour
     private bool attacking;
     private Vector2 controlVector;
     private int health;
-    private CanvasManager DialogueManager;
-    [HideInInspector] public int maxHealth;
+    private CanvasManager CanvasManager;
+    public int maxHealth;
     private Transform Camera;
     public GameObject[] castPositions;
     public GameObject[] interactPositions;
     public AudioClip gunShot;
     private AudioSource src;
-    private NavigationController nav;
     public Enums.Direction dir;
     private SceneController SceneController;
     private bool active;
@@ -31,14 +30,12 @@ public class PlayerController : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
         src = gameObject.GetComponent<AudioSource>();
-        nav = gameObject.GetComponent<NavigationController>();
 
         Camera = Managers.GetCamera();
-        DialogueManager = Managers.GetCanvasManager();
+        CanvasManager = Managers.GetCanvasManager();
         SceneController = Managers.GetSceneController();
-        maxHealth = DialogueManager.GetMaxHearts() * 2;
         health = maxHealth; // Set Health
-        DialogueManager.UpdateHealthGUI(this);
+        CanvasManager.UpdateHealthGUI(this);
         active = true;
         
     }
@@ -229,7 +226,7 @@ public class PlayerController : MonoBehaviour
     // Decrement Health by Amount
     public void DecHealth(int amount) {
         health -= amount;
-        DialogueManager.UpdateHealthGUI(this);
+        CanvasManager.UpdateHealthGUI(this);
     }
 
     // Decrement Health by 1
@@ -240,7 +237,7 @@ public class PlayerController : MonoBehaviour
     // Increment Health by Amount
     public void IncHealth(int amount) {
         health += amount;
-        DialogueManager.UpdateHealthGUI(this);
+        CanvasManager.UpdateHealthGUI(this);
     }
     
     // Increment Health by 1

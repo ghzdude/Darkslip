@@ -7,10 +7,9 @@ using System.IO;
 
 public class SceneController : MonoBehaviour
 {
-    private Transform SpawnPoint;
     private CanvasManager CanvasManager;
+    private GameObject PlayerProfab;
     private GameObject Player;
-    private InventoryManager InventoryManager;
     private MusicManager MusicManager;
     private Vector3 plrOldPosition;
     private bool initialized;
@@ -20,9 +19,8 @@ public class SceneController : MonoBehaviour
     private void Awake()
     {
         CanvasManager = Managers.GetCanvasManager();
-        InventoryManager = Managers.GetInventoryManager();
         MusicManager = Managers.GetMusic();
-        Player = Resources.Load<GameObject>(Paths.Player);
+        PlayerProfab = Resources.Load<GameObject>(Paths.Player);
         initialized = false;
     }
 
@@ -40,25 +38,21 @@ public class SceneController : MonoBehaviour
         // Search Any Scene After Manager
         if (scene.buildIndex > 0) {
 
-            SpawnPoint = Managers.GetSpawnPoint();
-            if (Player != null && initialized) {
-                Player.transform.position = plrOldPosition;
-            }
-            
+            Destroy(gameObject.GetComponent<AudioListener>());
+            SpawnPlayer();
+            Debug.Log(string.Format("spawned player: {0}", Player));
+
             // First Time Initializing
             if (!initialized) {
-
                 CanvasManager.InitializeCanvas();
                 CanvasManager.InitializeGameMenu();
                 CanvasManager.InitializeHealthObjects();
-                Destroy(gameObject.GetComponent<AudioListener>());
-                
+
                 initialized = true;
             }
-            
-            Debug.Log(string.Format("spawned player: {0}", Player));
 
         }
+
         SceneManager.SetActiveScene(scene);
 
         // Search Any Loaded Scene
@@ -71,16 +65,16 @@ public class SceneController : MonoBehaviour
 
         // Main Menu Only
         if (scene.buildIndex == 0) {
+
             CanvasManager.InitializeMainMenu();
             MusicManager.SetMusic(Enums.Music.MainMenu);
             return;
         }
 
         // First Level only
-        if (scene.buildIndex == 1) { 
-            InventoryManager.ClearInventory();
+        if (scene.buildIndex == 1) {
+            Managers.GetInventoryManager().ClearInventory();
             MusicManager.SetMusic(Enums.Music.DockingBay3);
-            SpawnPlayer();
             return;
         }
     }
@@ -118,6 +112,9 @@ public class SceneController : MonoBehaviour
     }
 
     public void SpawnPlayer() {
-        Player = Instantiate(Player, SpawnPoint.position, Quaternion.identity);
+        if (Player == null) {
+            Transform SpawnPoint = Managers.GetSpawnPoint();
+            Player = Instantiate(PlayerProfab, SpawnPoint.position, Quaternion.identity);
+        }
     }
 }

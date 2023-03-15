@@ -13,12 +13,17 @@ namespace Common
 
     public class Managers
     {
+        private static RectTransform Canvas;
         public static SceneController GetSceneController() => GameObject.FindGameObjectWithTag(Tags.SceneManager).GetComponent<SceneController>();
-        public static InventoryManager GetInventoryManager() => GameObject.FindGameObjectWithTag(Tags.InventoryManager).GetComponent<InventoryManager>();
         public static DialogueManager GetDialogueManager() => GameObject.FindGameObjectWithTag(Tags.DialogueManager).GetComponent<DialogueManager>();
         public static PlayerController GetPlayerController() => GameObject.FindGameObjectWithTag(Tags.Player).GetComponent<PlayerController>();
-        public static RectTransform GetCanvas() => GameObject.FindGameObjectWithTag(Tags.Canvas).GetComponent<RectTransform>();
+        public static RectTransform GetCanvas() {
+            if (Canvas == null)
+                Canvas = GameObject.FindGameObjectWithTag(Tags.Canvas).GetComponent<RectTransform>();
+            return Canvas;
+        }
         public static CanvasManager GetCanvasManager() => GetCanvas().GetComponent<CanvasManager>();
+        public static InventoryManager GetInventoryManager() => GetCanvasManager().InventoryManager;
         public static MusicManager GetMusic() => GameObject.FindGameObjectWithTag(Tags.Music).GetComponent<MusicManager>();
         public static Transform GetSpawnPoint() => GameObject.FindGameObjectWithTag(Tags.SpawnPoint).transform;
         public static Transform GetCamera() => GameObject.FindGameObjectWithTag(Tags.Camera).transform;

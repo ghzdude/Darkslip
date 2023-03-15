@@ -421,7 +421,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 15
   attackDuration: 0.33
-  maxHealth: 3
+  maxHealth: 6
   castPositions:
   - {fileID: 3408748927426436920}
   - {fileID: 3408748926589344822}
