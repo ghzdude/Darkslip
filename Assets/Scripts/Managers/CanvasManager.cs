@@ -54,6 +54,7 @@ public class CanvasManager : MonoBehaviour
 
     public void InitializeCanvas() {
         SetCanvasObjects();
+        dialogueManager.DisableDialogueBox();
         // dialogueManager.SetActive(false);
         PauseMenu.gameObject.SetActive(false);
         InventoryManager.gameObject.SetActive(false);

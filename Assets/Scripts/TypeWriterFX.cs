@@ -3,37 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Common;
+using TMPro;
 
 public class TypeWriterFX : MonoBehaviour
 {
-    private Text stored;
-    private char[] startTxt;
-    [Tooltip("Reveal Speed / 100")]
+    private char[] stored;
     public float revealSpeed;
     public AudioClip typeSound;
-    private int waitIndex;
     [HideInInspector] public bool completed;
     public bool running;
 
     public void Run(Text text) {
         completed = false;
-        ClearText();
-        // txt = gameObject.GetComponent<Text>();
-        stored = text;
-        startTxt = new char[stored.text.Length];
+        stored = text.text.ToCharArray();
+        Debug.Log("TFX is running: " + stored.ArrayToString());
         text.text = "";
 
         if (!running) {
             StartCoroutine(
-                StartType(stored)
+                StartType(text)
             );
         }
-    }
-
-    public void ClearText() {
-        // index = 0;
-        stored.text = "";
-        startTxt = new char[0];
     }
 
     public void Stop() {
@@ -42,20 +32,22 @@ public class TypeWriterFX : MonoBehaviour
     }
 
     IEnumerator StartType(Text txt) {
+        int waitIndex;
+        
         running = true;
-        for (int i = 0; i < stored.text.Length; i++) {
-            if (stored.text[i] == '\\' ) {
-                waitIndex = int.Parse(stored.text[i + 1].ToString() + stored.text[i + 2].ToString());
+        for (int i = 0; i < stored.Length; i++) {
+            if (stored[i] == '\\' ) {
+                waitIndex = int.Parse(stored[i + 1].ToString() + stored[i + 2].ToString());
                 i += 2;
                 for (int j = 0; j < waitIndex; j++) {
                     yield return new WaitForSecondsRealtime(revealSpeed / 100);
                 }
                 continue;
             }
-            if (stored.text[i] != ' ') {
+            if (stored[i] != ' ') {
                 Managers.GetMusic().GetAudioController().PlayClip(typeSound);
             }
-            txt.text += stored.text[i];
+            txt.text += stored[i];
             yield return new WaitForSecondsRealtime(revealSpeed / 100);
         }
         completed = true;

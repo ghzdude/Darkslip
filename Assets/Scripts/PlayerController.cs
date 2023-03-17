@@ -216,8 +216,8 @@ public class PlayerController : MonoBehaviour
                     return;
                 }
 
-                if (hit.GetComponent<CreateDialogue>() != null) {
-                    hit.GetComponent<CreateDialogue>().TriggerDialogue();
+                if (hit.GetComponent<Dialogue>() != null) {
+                    hit.GetComponent<Dialogue>().TriggerDialogue();
                 }
             }
         }

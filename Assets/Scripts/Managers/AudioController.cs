@@ -15,7 +15,12 @@ public class AudioController : MonoBehaviour
     public void PlayMusic(AudioClip clip)
     {
         if (musicSrc == null) {
-            Debug.Log("Music Source is " + musicSrc.ToString());
+            Debug.Log("Music Source is null!");
+            return;
+        }
+
+        if (clip == null) {
+            Debug.Log("Clip provided was null!");
             return;
         }
 
@@ -29,6 +34,11 @@ public class AudioController : MonoBehaviour
     {
         if (playerSrc == null)
             playerSrc = Managers.GetPlayerController().GetComponent<AudioSource>();
+
+        if (clip == null) {
+            Debug.Log("Clip provided was null!");
+            return;
+        }
 
         playerSrc.PlayOneShot(clip, Managers.GetCanvasManager().GetSFXSliderValue());
     }

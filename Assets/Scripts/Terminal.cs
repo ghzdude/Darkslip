@@ -61,8 +61,8 @@ public class Terminal : MonoBehaviour
     }
 
     private void CheckDialogue() {
-        if (GetComponent<CreateDialogue>() != null) {
-            GetComponent<CreateDialogue>().TriggerDialogue();
+        if (GetComponent<Dialogue>() != null) {
+            GetComponent<Dialogue>().TriggerDialogue();
         }
     }
 }

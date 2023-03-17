@@ -17,30 +17,30 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private Sprite DoctorSprite;
     public AudioClip dialogueOpen;
     public AudioClip dialogueClose;
+    public AudioClip dialogueText;
+    [Tooltip("Reveal Speed / 100")]
+    public int textRevealSpeed;
     private TypeWriterFX typer;
     private bool dialogueActive;
-    private CreateDialogue nextDialogue;
+    private Dialogue currentDialogue;
     private float timer;
     private AudioController audioController;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         typer = gameObject.AddComponent<TypeWriterFX>();
+        typer.revealSpeed = textRevealSpeed;
         timer = 0;
         audioController = Managers.GetMusic().GetComponent<AudioController>();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (dialogueActive && typer.completed && Managers.GetPlayerController() != null) {
-            if (Input.GetKeyUp(KeyCode.Z)) {
-                EnableNextDialogue();
-            }
-
-            if (timer <= 0f) {
-                EnableNextDialogue();
+    void Update() {
+        if (dialogueActive && typer.completed) {
+            if (Input.GetKeyUp(KeyCode.Z) || timer <= 0f) {
+                currentDialogue = null;
+                StartDialogue(currentDialogue);
             }
 
             timer -= Time.unscaledDeltaTime;
@@ -68,31 +68,32 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void SetNextDialogue(CreateDialogue nextDialogue) => this.nextDialogue = nextDialogue;
+    public void SetNextDialogue(Dialogue nextDialogue) => currentDialogue = nextDialogue;
 
-    public void EnableNextDialogue() {
+    public void StartDialogue(Dialogue dialogue) {
         ClearDialogue();
 
-        if (nextDialogue != null && nextDialogue.infoBox) {
-            EnableDialogueBox(nextDialogue.text);
-            if (nextDialogue.nextDialogue != null) {
-                SetNextDialogue(nextDialogue.nextDialogue);
-            } else {
-                nextDialogue = null;
-            }
-        } else if (nextDialogue != null) {
-            EnableDialogueBox(nextDialogue.text, nextDialogue.character);
-            if (nextDialogue.nextDialogue != null) {
-                SetNextDialogue(nextDialogue.nextDialogue);
-            } else {
-                nextDialogue = null;
-            }
-        } else {
+        currentDialogue = dialogue;
+        if (currentDialogue == null) {
             DisableDialogueBox();
+            return;
         }
+
+        if (currentDialogue.infoBox)
+            EnableDialogueBox(currentDialogue.text);
+        else
+            EnableDialogueBox(currentDialogue.text, currentDialogue.character);
+        
+        SetNextDialogue(currentDialogue.nextDialogue);
+        
     }
 
     private void InitializeDialogue(Text text) {
+        if (text == null) {
+            Debug.Log("Text for Dialogue is null!");
+            return;
+        }
+
         audioController = Managers.GetMusic().GetComponent<AudioController>();
         audioController.PlayClip(dialogueOpen);
         Time.timeScale = 0;
@@ -101,7 +102,7 @@ public class DialogueManager : MonoBehaviour
         dialogueActive = true;
     }
 
-    public void EnableDialogueBox(string text, Enums.Character character) {
+    private void EnableDialogueBox(string text, Enums.Character character) {
         if (!dialogueActive && !DialoguePanel.gameObject.activeInHierarchy) {
             DialogueText.text = text;
             InitializeDialogue(DialogueText);
@@ -109,23 +110,14 @@ public class DialogueManager : MonoBehaviour
             DialoguePanel.gameObject.SetActive(true);
 
         }
-
-        if (nextDialogue != null) {
-            SetNextDialogue(nextDialogue);
-        }
     }
 
-    public void EnableDialogueBox(string text) {
+    private void EnableDialogueBox(string text) {
         if (!dialogueActive && !InfoPanel.gameObject.activeInHierarchy) {
             InfoText.text = text;
             InitializeDialogue(InfoText);
             InfoPanel.gameObject.SetActive(true);
         }
-
-        if (nextDialogue != null) {
-            SetNextDialogue(nextDialogue);
-        }
-
     }
 
     public void DisableDialogueBox() {
@@ -135,11 +127,7 @@ public class DialogueManager : MonoBehaviour
 
         audioController.PlayClip(dialogueClose);
 
-        if (InfoPanel.gameObject.activeInHierarchy)
-            InfoPanel.gameObject.SetActive(false);
-
-        if (DialoguePanel.gameObject.activeInHierarchy)
-            DialoguePanel.gameObject.SetActive(false);
+        ClearDialogue();
 
         Time.timeScale = 1;
     }

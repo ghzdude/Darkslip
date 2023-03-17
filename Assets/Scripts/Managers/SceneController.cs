@@ -38,9 +38,7 @@ public class SceneController : MonoBehaviour
         // Search Any Scene After Manager
         if (scene.buildIndex > 0) {
 
-            Destroy(gameObject.GetComponent<AudioListener>());
             SpawnPlayer();
-            Debug.Log(string.Format("spawned player: {0}", Player));
 
             // First Time Initializing
             if (!initialized) {
@@ -48,6 +46,7 @@ public class SceneController : MonoBehaviour
                 CanvasManager.InitializeGameMenu();
                 CanvasManager.InitializeHealthObjects();
 
+                Destroy(gameObject.GetComponent<AudioListener>());
                 initialized = true;
             }
 
@@ -115,6 +114,7 @@ public class SceneController : MonoBehaviour
         if (Player == null) {
             Transform SpawnPoint = Managers.GetSpawnPoint();
             Player = Instantiate(PlayerProfab, SpawnPoint.position, Quaternion.identity);
+            // Debug.Log(string.Format("spawned player: {0}", Player));
         }
     }
 }

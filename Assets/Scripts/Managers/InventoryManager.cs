@@ -127,10 +127,7 @@ public class InventoryManager : MonoBehaviour
     }
 
     public void RetrieveDialouge (int index, bool character) {
-        if (!DialogueManager.IsActive() && character)
-            DialogueManager.EnableDialogueBox(listEntries[index].GetItem().TextOnPickup, Enums.Character.Sean);
-        else if (!DialogueManager.IsActive())
-            DialogueManager.EnableDialogueBox(listEntries[index].GetItem().TextOnPickup);
+        DialogueManager.StartDialogue(listEntries[index].GetItem().GetComponent<Dialogue>());
     }
 
     private void OnDrawGizmos() {
@@ -140,21 +137,5 @@ public class InventoryManager : MonoBehaviour
         Vector2 size = new Vector2(entryPrefab.GetComponent<RectTransform>().rect.width, entryPrefab.GetComponent<RectTransform>().rect.height);
         
         Gizmos.DrawCube(StartingPos.position, size);
-    }
-
-    private class Entry {
-        public Collectable Collectable;
-        public int count;
-        public ItemEntry EntryUI;
-
-        public Entry (Collectable collectable, ItemEntry entryUI) {
-            Collectable = collectable;
-            count = 1;
-            EntryUI = entryUI;
-        }
-
-        public override string ToString() {
-            return string.Format(format, Collectable.name, count);
-        }
     }
 }

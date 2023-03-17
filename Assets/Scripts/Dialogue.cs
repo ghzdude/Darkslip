@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Common;
 
-public class CreateDialogue : MonoBehaviour
+public class Dialogue : MonoBehaviour
 {
     [TextArea(10, 10)] public string text;
     public bool infoBox = true;
     public bool shouldDisable = true;
     public Enums.Character character;
-    public CreateDialogue nextDialogue;
+    public Dialogue nextDialogue;
 
     private void OnDrawGizmos() {
         Collider2D col = GetComponent<Collider2D>();
@@ -24,15 +24,12 @@ public class CreateDialogue : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision){
-        if (collision != null && collision.GetComponent<PlayerController>() != null) {
+        if (collision.GetComponent<PlayerController>() != null) {
             TriggerDialogue();
         }
     }
 
     public void TriggerDialogue() {
-        if (infoBox)
-            Managers.GetDialogueManager().EnableDialogueBox(text);
-        else
-            Managers.GetDialogueManager().EnableDialogueBox(text, character);
+        Managers.GetDialogueManager().StartDialogue(this);
     }
 }

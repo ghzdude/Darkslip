@@ -24,12 +24,16 @@ public class Collectable : MonoBehaviour
     }
 
     public void Fire() {
-        if (!Managers.GetDialogueManager().IsActive() && Player != null) {
-            if (!characterResponse)
-                Managers.GetDialogueManager().EnableDialogueBox(TextOnPickup);
-            else
-                Managers.GetDialogueManager().EnableDialogueBox(TextOnPickup, Enums.Character.Sean);
+        DialogueManager dialogueManager = Managers.GetDialogueManager();
+        if (!dialogueManager.IsActive() && Player != null) {
+            
+            // retrofit a Dialogue instead of using Collectable
+            Dialogue dialogue = gameObject.AddComponent<Dialogue>();
+            dialogue.infoBox = !characterResponse;
+            dialogue.text = TextOnPickup;
+            dialogue.character = Enums.Character.Sean;
 
+            dialogueManager.StartDialogue(dialogue);
             if (MarkerTrigger != null) {
                 MarkerTrigger.GenericTrigger(Player.GetComponent<NavigationController>());
             }
