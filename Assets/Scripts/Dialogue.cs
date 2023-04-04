@@ -31,5 +31,6 @@ public class Dialogue : MonoBehaviour
 
     public void TriggerDialogue() {
         Managers.GetDialogueManager().StartDialogue(this);
+        gameObject.SetActive(!shouldDisable);
     }
 }

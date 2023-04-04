@@ -11,12 +11,13 @@ public class Collectable : MonoBehaviour
     private MarkerTrigger MarkerTrigger;
     public bool characterResponse;
     public bool shouldDisable;
-    public GameObject glowingSprite;
+    private GameObject glowingSprite;
     [HideInInspector] public Sprite icon;
 
     private void Start() {
         icon = GetComponent<SpriteRenderer>().sprite;
         Player = Managers.GetPlayerController().transform;
+        glowingSprite = Resources.Load<GameObject>(Paths.ObjectGlow);
         MarkerTrigger = GetComponent<MarkerTrigger>();
 
         if (transform.Find(glowingSprite.name) == null)

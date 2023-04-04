@@ -63,10 +63,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Managers.GetDialogueManager().IsActive()) {
-            if (Input.GetKeyDown(KeyCode.Z))
-                Interact();
-        }
+        if (Input.GetKeyDown(KeyCode.Z))
+            Interact();
 
         if (CheckHealth())
             SceneController.ResetScene();
@@ -181,6 +179,10 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Interact() {
+        if (Managers.GetDialogueManager().IsActive()) {
+            return;
+        }
+        
         RaycastHit2D[] hits;
 
         switch (dir) {
@@ -216,7 +218,7 @@ public class PlayerController : MonoBehaviour
                     return;
                 }
 
-                if (hit.GetComponent<Dialogue>() != null) {
+                if (hit.GetComponent<Dialogue>() != null && hit.gameObject.CompareTag(Tags.Interactable)) {
                     hit.GetComponent<Dialogue>().TriggerDialogue();
                 }
             }

@@ -107,5 +107,6 @@ namespace Common
         public const string Player = "Prefabs/Sean";
         public const string ItemEntry = "Prefabs/UI/Item Entry";
         public const string StaticAnimator = "Animations/staticPortrait1";
+        public const string ObjectGlow = "Prefabs/Collectable/objectGlow";
     }
 }
