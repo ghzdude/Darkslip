@@ -377,8 +377,10 @@ MonoBehaviour:
   DialogueText: {fileID: 3599419599886287081}
   SeanSprite: {fileID: -4393859362170001284, guid: 8d941ef0ae5eb204fbc3c0bb45f41594, type: 3}
   DoctorSprite: {fileID: 5389387911156544634, guid: 8d941ef0ae5eb204fbc3c0bb45f41594, type: 3}
-  dialogueOpen: {fileID: 0}
-  dialogueClose: {fileID: 0}
+  dialogueOpen: {fileID: 8300000, guid: ef7f2343fc900f3469de942115c55880, type: 3}
+  dialogueClose: {fileID: 8300000, guid: ed8f083cd0190ac4581f0b81f8ce248a, type: 3}
+  dialogueText: {fileID: 8300000, guid: e9903ff83bcfd9349b4a9deba1277812, type: 3}
+  textRevealSpeed: 0
 --- !u!1 &2971941432723104195
 GameObject:
   m_ObjectHideFlags: 0
