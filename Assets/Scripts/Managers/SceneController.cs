@@ -39,6 +39,7 @@ public class SceneController : MonoBehaviour
         if (scene.buildIndex > 0) {
 
             SpawnPlayer();
+            SceneManager.MoveGameObjectToScene(Player, scene);
 
             // First Time Initializing
             if (!initialized) {
@@ -116,5 +117,9 @@ public class SceneController : MonoBehaviour
             Player = Instantiate(PlayerProfab, SpawnPoint.position, Quaternion.identity);
             // Debug.Log(string.Format("spawned player: {0}", Player));
         }
+    }
+
+    public void MoveGameObjectToManagers(GameObject obj) {
+        SceneManager.MoveGameObjectToScene(obj, SceneManager.GetSceneByName(Scenes.Manager));
     }
 }
