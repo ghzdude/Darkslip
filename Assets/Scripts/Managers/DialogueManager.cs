@@ -31,6 +31,7 @@ public class DialogueManager : MonoBehaviour
     {
         typer = gameObject.AddComponent<TypeWriterFX>();
         typer.revealSpeed = textRevealSpeed;
+        typer.typeSound = dialogueText;
         timer = 0;
         audioController = Managers.GetMusic().GetComponent<AudioController>();
     }
@@ -39,7 +40,6 @@ public class DialogueManager : MonoBehaviour
     void Update() {
         if (dialogueActive && typer.completed) {
             if (Input.GetKeyUp(KeyCode.Z) || timer <= 0f) {
-                currentDialogue = null;
                 StartDialogue(currentDialogue);
             }
 
@@ -68,8 +68,6 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void SetNextDialogue(Dialogue nextDialogue) => currentDialogue = nextDialogue;
-
     public void StartDialogue(Dialogue dialogue) {
         ClearDialogue();
 
@@ -83,9 +81,8 @@ public class DialogueManager : MonoBehaviour
             EnableDialogueBox(currentDialogue.text);
         else
             EnableDialogueBox(currentDialogue.text, currentDialogue.character);
-        
-        SetNextDialogue(currentDialogue.nextDialogue);
-        
+
+        currentDialogue = dialogue.nextDialogue;
     }
 
     private void InitializeDialogue(Text text) {
@@ -103,21 +100,16 @@ public class DialogueManager : MonoBehaviour
     }
 
     private void EnableDialogueBox(string text, Enums.Character character) {
-        if (!dialogueActive && !DialoguePanel.gameObject.activeInHierarchy) {
-            DialogueText.text = text;
-            InitializeDialogue(DialogueText);
-            SetSprite(character);
-            DialoguePanel.gameObject.SetActive(true);
-
-        }
+        DialogueText.text = text;
+        InitializeDialogue(DialogueText);
+        SetSprite(character);
+        DialoguePanel.gameObject.SetActive(true);
     }
 
     private void EnableDialogueBox(string text) {
-        if (!dialogueActive && !InfoPanel.gameObject.activeInHierarchy) {
-            InfoText.text = text;
-            InitializeDialogue(InfoText);
-            InfoPanel.gameObject.SetActive(true);
-        }
+        InfoText.text = text;
+        InitializeDialogue(InfoText);
+        InfoPanel.gameObject.SetActive(true);
     }
 
     public void DisableDialogueBox() {
