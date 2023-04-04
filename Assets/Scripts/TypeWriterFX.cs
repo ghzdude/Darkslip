@@ -44,7 +44,7 @@ public class TypeWriterFX : MonoBehaviour
                 }
                 continue;
             }
-            if (stored[i] != ' ') {
+            if (stored[i] != ' ' || i % 2 == 0) {
                 Managers.GetMusic().GetAudioController().PlayClip(typeSound);
             }
             txt.text += stored[i];
