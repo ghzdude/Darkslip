@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Common;
+
 public class Collectable : MonoBehaviour
 {
     public string internalName;
@@ -9,12 +11,13 @@ public class Collectable : MonoBehaviour
     private MarkerTrigger MarkerTrigger;
     public bool characterResponse;
     public bool shouldDisable;
-    public GameObject glowingSprite;
+    private GameObject glowingSprite;
     [HideInInspector] public Sprite icon;
 
     private void Start() {
         icon = GetComponent<SpriteRenderer>().sprite;
-        Player = GameObject.FindGameObjectWithTag("Player").transform;
+        Player = Managers.GetPlayerController().transform;
+        glowingSprite = Resources.Load<GameObject>(Paths.ObjectGlow);
         MarkerTrigger = GetComponent<MarkerTrigger>();
 
         if (transform.Find(glowingSprite.name) == null)
@@ -22,17 +25,21 @@ public class Collectable : MonoBehaviour
     }
 
     public void Fire() {
-        if (!Managers.GetDialogueManager().dialogueActive && Player != null) {
-            if (!characterResponse)
-                Managers.GetDialogueManager().EnableDialogueBox(TextOnPickup);
-            else
-                Managers.GetDialogueManager().EnableDialogueBox(TextOnPickup, Enums.Character.Sean);
+        DialogueManager dialogueManager = Managers.GetDialogueManager();
+        if (!dialogueManager.IsActive() && Player != null) {
+            
+            // retrofit a Dialogue instead of using Collectable
+            Dialogue dialogue = gameObject.AddComponent<Dialogue>();
+            dialogue.infoBox = !characterResponse;
+            dialogue.text = TextOnPickup;
+            dialogue.character = Enums.Character.Sean;
 
+            dialogueManager.StartDialogue(dialogue);
             if (MarkerTrigger != null) {
                 MarkerTrigger.GenericTrigger(Player.GetComponent<NavigationController>());
             }
             transform.SetParent(Player.GetChild(0));
-
+            
         } else {
             Debug.Log("Player transform is null, collectable not parented to player inventory!");
         }

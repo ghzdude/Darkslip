@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Common;
 
 public class PlayerController : MonoBehaviour
 {
@@ -13,14 +14,13 @@ public class PlayerController : MonoBehaviour
     private bool attacking;
     private Vector2 controlVector;
     private int health;
-    private DialogueManager DialogueManager;
-    [HideInInspector] public int maxHealth;
+    private CanvasManager CanvasManager;
+    public int maxHealth;
     private Transform Camera;
     public GameObject[] castPositions;
     public GameObject[] interactPositions;
     public AudioClip gunShot;
     private AudioSource src;
-    private NavigationController nav;
     public Enums.Direction dir;
     private SceneController SceneController;
     private bool active;
@@ -30,14 +30,12 @@ public class PlayerController : MonoBehaviour
         rb = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
         src = gameObject.GetComponent<AudioSource>();
-        nav = gameObject.GetComponent<NavigationController>();
 
-        Camera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
-        SceneController = GameObject.FindGameObjectWithTag("SceneController").GetComponent<SceneController>();
-        maxHealth = DialogueManager.GetMaxHearts() * 2;
+        Camera = Managers.GetCamera();
+        CanvasManager = Managers.GetCanvasManager();
+        SceneController = Managers.GetSceneController();
         health = maxHealth; // Set Health
-        DialogueManager.UpdateHealthGUI(this);
+        CanvasManager.UpdateHealthGUI(this);
         active = true;
         
     }
@@ -65,10 +63,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!DialogueManager.dialogueActive) {
-            if (Input.GetKeyDown(KeyCode.Z))
-                Interact();
-        }
+        if (Input.GetKeyDown(KeyCode.Z))
+            Interact();
 
         if (CheckHealth())
             SceneController.ResetScene();
@@ -147,7 +143,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
-        src.PlayOneShot(gunShot, Managers.GetDialogueManager().GetSFXSliderValue() * 1.1f);
+        src.PlayOneShot(gunShot, Managers.GetCanvasManager().GetSFXSliderValue() * 1.1f);
 
         if (hits != null && hits.Length > 0) {
             for (int i = 0; i < hits.Length; i++) {
@@ -183,6 +179,10 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Interact() {
+        if (Managers.GetDialogueManager().IsActive()) {
+            return;
+        }
+        
         RaycastHit2D[] hits;
 
         switch (dir) {
@@ -214,12 +214,12 @@ public class PlayerController : MonoBehaviour
 
                 if (hit.GetComponent<Collectable>()  != null) {
                     hit.GetComponent<Collectable>().Fire();
-                    SceneController.GetInventoryManager().AddItem(hit.GetComponent<Collectable>());
+                    Managers.GetInventoryManager().AddItem(hit.GetComponent<Collectable>());
                     return;
                 }
 
-                if (hit.GetComponent<CreateDialogue>() != null) {
-                    hit.GetComponent<CreateDialogue>().EnableDialogueBox();
+                if (hit.GetComponent<Dialogue>() != null && hit.gameObject.CompareTag(Tags.Interactable)) {
+                    hit.GetComponent<Dialogue>().TriggerDialogue();
                 }
             }
         }
@@ -228,7 +228,7 @@ public class PlayerController : MonoBehaviour
     // Decrement Health by Amount
     public void DecHealth(int amount) {
         health -= amount;
-        DialogueManager.UpdateHealthGUI(this);
+        CanvasManager.UpdateHealthGUI(this);
     }
 
     // Decrement Health by 1
@@ -239,7 +239,7 @@ public class PlayerController : MonoBehaviour
     // Increment Health by Amount
     public void IncHealth(int amount) {
         health += amount;
-        DialogueManager.UpdateHealthGUI(this);
+        CanvasManager.UpdateHealthGUI(this);
     }
     
     // Increment Health by 1

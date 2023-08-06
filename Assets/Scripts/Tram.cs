@@ -12,7 +12,7 @@ public class Tram : MonoBehaviour
     private Transform sitting;
     private Transform exit;
     private Transform Player;
-    private DialogueManager DialogueManager;
+    private CanvasManager DialogueManager;
     private Collider2D extraCollider;
     private bool moving;
     public float speed;
@@ -28,7 +28,7 @@ public class Tram : MonoBehaviour
         Destinations.AddRange(GameObject.Find("TramPositions").GetComponentsInChildren<Transform>());
         Destinations.RemoveAt(0);
         transform.position = Destinations[0].position;
-        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<DialogueManager>();
+        DialogueManager = GameObject.FindGameObjectWithTag("DialogueManager").GetComponent<CanvasManager>();
     }
 
     // Update is called once per frame

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Common;
 
 public class CreateEnemy : MonoBehaviour {
     public GameObject Enemy;
@@ -32,7 +33,7 @@ public class CreateEnemy : MonoBehaviour {
         }
 
         if (VectorMath.CalculateVector(transform.position, Player.transform.position).magnitude < src.minDistance && !triggered) {
-            src.PlayOneShot(breakClip, Managers.GetDialogueManager().GetSFXSliderValue());
+            src.PlayOneShot(breakClip, Managers.GetCanvasManager().GetSFXSliderValue());
             StopCoroutine(Shake(shakeAmount));
             InstantiateEnemy();
             // gameObject.SetActive(false);
@@ -50,7 +51,7 @@ public class CreateEnemy : MonoBehaviour {
         shaking = true;
         
         if (VectorMath.CalculateVector(transform.position, Player.transform.position).magnitude < src.maxDistance) {
-            src.PlayOneShot(rattle, Managers.GetDialogueManager().GetSFXSliderValue());
+            src.PlayOneShot(rattle, Managers.GetCanvasManager().GetSFXSliderValue());
             // Debug.Log("shake noise");
         }
 
