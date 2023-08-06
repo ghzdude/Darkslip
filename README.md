@@ -14,7 +14,7 @@ Everything under:
 - `Assets/Scenes`
 - `Assets/Resources`
 
-is my work and licensed under the license of this repository
+is my work and is All Rights Reserved
 
 Everything under:
 - `Assets/Audio`
